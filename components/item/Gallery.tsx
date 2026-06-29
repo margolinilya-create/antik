@@ -11,14 +11,14 @@ export function Gallery({ images, title }: { images: ItemImage[]; title: string 
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-lg border border-stone-200 bg-stone-100">
+      <div className="relative aspect-square overflow-hidden bg-surface">
         <Image
           src={imageUrl(cover?.storage_path, { width: 1200 })}
           alt={cover?.alt_ru ?? title}
           fill
           priority
           sizes="(max-width: 768px) 100vw, 600px"
-          className="object-contain"
+          className="object-cover"
         />
       </div>
       {images.length > 1 && (
@@ -28,8 +28,8 @@ export function Gallery({ images, title }: { images: ItemImage[]; title: string 
               key={img.storage_path}
               onClick={() => setActive(i)}
               aria-label={`Фото ${i + 1}`}
-              className={`relative aspect-square overflow-hidden rounded border ${
-                i === active ? "border-stone-900" : "border-stone-200"
+              className={`relative aspect-square overflow-hidden border transition-colors ${
+                i === active ? "border-accent" : "border-line hover:border-muted"
               }`}
             >
               <Image

@@ -1,30 +1,37 @@
 @import "tailwindcss";
 
 /* =====================================================================
-   Антик — premium heritage design system
-   Warm parchment canvas · oxblood authority accent · brass gilt details ·
-   deep forest-green for hero/footer · editorial serif + clean sans.
+   Антик — "Gallery Noir" modern-luxury design system
+   Near-black gallery canvas · bone/ivory text · a single champagne-gold
+   accent used sparingly (hairlines, hover, price) · contemporary sans
+   (Manrope) · vast negative space. Phillips / Sotheby's / quiet-luxury.
    ===================================================================== */
 @theme {
-  --color-canvas: #f6f0e4;      /* warm parchment — page background */
-  --color-surface: #fffdf8;     /* warm white — cards */
-  --color-ink: #211c16;         /* warm near-black — text */
-  --color-muted: #6f6557;       /* warm gray-brown — secondary text */
-  --color-accent: #7c2d27;      /* oxblood — CTAs, price, links */
-  --color-accent-deep: #5f211c; /* darker oxblood — hover */
-  --color-brass: #a9863f;       /* brass / gilt — fine accents, hairlines */
-  --color-forest: #232d26;      /* deep charcoal-green — hero / footer */
-  --color-cream: #f3ead9;       /* light cream — on-dark text/surfaces */
-  --color-line: #e6dcc9;        /* warm hairline border */
+  --color-bg: #0f0f10;        /* near-black, faintly warm — page */
+  --color-surface: #161617;   /* charcoal — cards / sections */
+  --color-elevated: #1d1d1f;  /* hover / raised */
+  --color-ink: #f2efe9;       /* bone / ivory — primary text */
+  --color-muted: #9c968b;     /* warm gray — secondary text */
+  --color-faint: #6a655c;     /* tertiary — labels, captions */
+  --color-line: #2a2a2c;      /* hairline border on dark */
+  --color-accent: #c8a96a;    /* champagne gold — sparing accent */
+  --color-accent-soft: #ddc79e;
+  --color-onaccent: #14130f;  /* text on the gold accent */
+
+  --radius: 2px;
 }
 
 @theme inline {
   --font-sans: var(--ff-sans);
-  --font-display: var(--ff-display);
+  --font-display: var(--ff-sans);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--color-canvas);
+  background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--ff-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -33,19 +40,31 @@ body {
 
 ::selection {
   background: var(--color-accent);
-  color: var(--color-cream);
+  color: var(--color-onaccent);
 }
 
-/* Small uppercase letterspaced label — a museum-label signature detail. */
+/* Tiny uppercase letterspaced label — the gallery-catalogue signature. */
 .eyebrow {
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-faint);
 }
 
-/* Thin brass divider used under headings / in the hero. */
-.brass-rule {
+/* Hairline champagne divider. */
+.gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, var(--color-brass), transparent);
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+}
+
+/* Animated underline for editorial links. */
+.link-underline {
+  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover {
+  background-size: 100% 1px;
 }

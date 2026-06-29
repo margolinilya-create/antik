@@ -57,7 +57,7 @@ export default async function CatalogPage({
         ]}
       />
       <div className="flex items-baseline justify-between border-b border-line pb-4">
-        <h1 className="font-display text-3xl font-semibold">Каталог</h1>
+        <h1 className="text-3xl font-light tracking-tight">Каталог</h1>
         <span className="eyebrow">{total} предметов</span>
       </div>
 
@@ -106,15 +106,15 @@ function Pagination({
   return (
     <nav className="mt-8 flex items-center justify-center gap-2 text-sm">
       {page > 1 && (
-        <a href={href(page - 1)} className="rounded border border-stone-300 px-3 py-1.5 hover:bg-white">
+        <a href={href(page - 1)} className="border border-line px-4 py-2 text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:border-accent hover:text-ink">
           ← Назад
         </a>
       )}
-      <span className="px-2 text-stone-500">
+      <span className="px-2 text-faint">
         Страница {page} из {totalPages}
       </span>
       {page < totalPages && (
-        <a href={href(page + 1)} className="rounded border border-stone-300 px-3 py-1.5 hover:bg-white">
+        <a href={href(page + 1)} className="border border-line px-4 py-2 text-xs uppercase tracking-[0.14em] text-muted transition-colors hover:border-accent hover:text-ink">
           Вперёд →
         </a>
       )}

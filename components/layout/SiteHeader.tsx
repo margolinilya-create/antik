@@ -3,50 +3,51 @@ import { Search } from "lucide-react";
 import { CartLink } from "./CartLink";
 
 const NAV = [
-  { href: "/catalog?category=samovary", label: "Самовары" },
+  { href: "/catalog?category=zhivopis", label: "Живопись" },
   { href: "/catalog?category=ikony", label: "Иконы" },
   { href: "/catalog?category=farfor", label: "Фарфор" },
-  { href: "/catalog?category=zhivopis", label: "Живопись" },
-  { href: "/catalog", label: "Весь каталог" },
+  { href: "/catalog?category=samovary", label: "Самовары" },
+  { href: "/catalog", label: "Каталог" },
 ];
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-4">
-        <Link href="/" className="group shrink-0 leading-none">
-          <span className="font-display text-2xl font-semibold tracking-tight text-ink">
-            Антикъ
-          </span>
-          <span className="mt-1 block h-px w-full bg-brass transition-all group-hover:bg-accent" />
+    <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-[1280px] items-center gap-8 px-5 py-5">
+        <Link
+          href="/"
+          aria-label="Антик — на главную"
+          className="shrink-0 text-lg font-semibold uppercase tracking-[0.42em] text-ink transition-colors hover:text-accent"
+        >
+          Антик
         </Link>
-        <nav className="hidden flex-1 items-center gap-6 md:flex">
+        <nav className="hidden flex-1 items-center justify-center gap-8 md:flex">
           {NAV.map((n) => (
             <Link
               key={n.href}
               href={n.href}
-              className="text-[0.8rem] font-medium uppercase tracking-[0.12em] text-muted transition-colors hover:text-accent"
+              className="link-underline py-1 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-muted transition-colors hover:text-ink"
             >
               {n.label}
             </Link>
           ))}
         </nav>
-        <form action="/search" className="ml-auto flex items-center">
-          <div className="relative">
+        <div className="ml-auto flex items-center gap-5">
+          <form action="/search" className="relative hidden sm:block">
             <Search
-              className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted"
+              className="pointer-events-none absolute left-0 top-1/2 size-4 -translate-y-1/2 text-faint"
               aria-hidden
             />
             <input
               name="q"
               type="search"
-              placeholder="Поиск…"
+              placeholder="Поиск"
               aria-label="Поиск по каталогу"
-              className="w-36 rounded-sm border border-line bg-canvas/60 py-2 pl-8 pr-3 text-sm outline-none transition-colors focus:border-brass sm:w-56"
+              className="w-28 border-b border-line bg-transparent py-1.5 pl-6 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus:w-44"
             />
-          </div>
-        </form>
-        <CartLink />
+          </form>
+          <CartLink />
+        </div>
       </div>
     </header>
   );

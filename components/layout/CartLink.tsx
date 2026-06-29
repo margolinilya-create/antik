@@ -13,11 +13,11 @@ export function CartLink() {
     <Link
       href="/cart"
       aria-label="Подборка"
-      className="relative flex items-center text-stone-600 hover:text-stone-900"
+      className="relative flex items-center text-muted transition-colors hover:text-ink"
     >
       <ShoppingBag className="size-5" aria-hidden />
       {mounted && count > 0 && (
-        <span className="absolute -right-2 -top-2 flex size-4 items-center justify-center rounded-full bg-stone-900 text-[10px] font-medium text-white">
+        <span className="absolute -right-2 -top-2 flex size-4 items-center justify-center rounded-full bg-accent text-[10px] font-semibold text-onaccent">
           {count}
         </span>
       )}

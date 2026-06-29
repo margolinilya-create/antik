@@ -22,19 +22,19 @@ export default async function CheckoutPage({
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
-      <h1 className="font-display text-3xl font-semibold">Оставить заявку</h1>
+      <h1 className="text-3xl font-light tracking-tight">Оставить заявку</h1>
 
       {item && (
         <div className="flex items-center justify-between rounded-sm border border-line bg-surface px-4 py-3">
           <div>
-            <Link href={`/item/${item.slug}`} className="font-display text-lg hover:text-accent">
+            <Link href={`/item/${item.slug}`} className="text-base font-medium hover:text-accent">
               {item.title_ru}
             </Link>
             {item.subtitle_ru && (
               <p className="text-sm text-muted">{item.subtitle_ru}</p>
             )}
           </div>
-          <span className="font-display font-semibold text-accent">
+          <span className="text-lg font-light text-ink">
             {formatPrice(item.price, item.currency, item.price_on_request)}
           </span>
         </div>

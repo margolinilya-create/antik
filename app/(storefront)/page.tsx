@@ -5,52 +5,55 @@ import { ItemCard } from "@/components/catalog/ItemCard";
 export const revalidate = 3600;
 
 const CATEGORIES = [
-  { slug: "samovary", name: "Самовары" },
+  { slug: "zhivopis", name: "Живопись" },
   { slug: "ikony", name: "Иконы" },
   { slug: "farfor", name: "Фарфор" },
   { slug: "mebel", name: "Мебель" },
+  { slug: "samovary", name: "Самовары" },
   { slug: "monety", name: "Монеты" },
-  { slug: "zhivopis", name: "Живопись" },
 ];
 
 export default async function HomePage() {
   const { items } = await searchItems({ limit: 8, sort: "newest" });
 
   return (
-    <div className="space-y-16">
-      {/* Hero — dark forest "gallery wall" */}
-      <section className="relative overflow-hidden rounded-sm bg-forest px-6 py-20 text-center text-cream sm:px-12 sm:py-24">
-        <p className="eyebrow !text-brass">Антикварный салонъ · с провенансом</p>
-        <h1 className="mx-auto mt-4 max-w-3xl text-balance font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">
-          Антиквариат, проверенный экспертизой и временем
+    <div className="space-y-24">
+      {/* Hero — austere, oversized, image-light */}
+      <section className="pt-10 md:pt-20">
+        <p className="eyebrow text-accent">Антикварная галерея · с 1999</p>
+        <h1 className="mt-6 max-w-4xl text-balance text-4xl font-light leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
+          Предметы с историей —{" "}
+          <span className="text-muted">отобранные с экспертизой</span>
         </h1>
-        <div className="brass-rule mx-auto my-6 w-24" />
-        <p className="mx-auto max-w-2xl text-cream/70">
-          Курируемая коллекция предметов старины. Каждый предмет уникален,
-          атрибутирован и представлен в единственном экземпляре.
-        </p>
-        <Link
-          href="/catalog"
-          className="mt-8 inline-block rounded-sm bg-accent px-7 py-3 text-sm font-medium uppercase tracking-[0.12em] text-cream transition-colors hover:bg-accent-deep"
-        >
-          Смотреть каталог
-        </Link>
+        <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4">
+          <Link
+            href="/catalog"
+            className="group inline-flex items-center gap-3 bg-accent px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-onaccent transition-colors hover:bg-accent-soft"
+          >
+            Смотреть коллекцию
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </Link>
+          <p className="max-w-sm text-sm leading-relaxed text-muted">
+            Курируемое собрание антиквариата. Каждый предмет уникален,
+            атрибутирован и представлен в единственном экземпляре.
+          </p>
+        </div>
       </section>
 
-      {/* Categories */}
+      {/* Category navigation — editorial row */}
       <section>
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-display text-2xl font-semibold">Категории</h2>
-          <div className="brass-rule ml-6 hidden flex-1 sm:block" />
+        <div className="mb-8 flex items-center gap-6">
+          <p className="eyebrow">Разделы коллекции</p>
+          <div className="gold-rule flex-1" />
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line sm:grid-cols-3 lg:grid-cols-6">
           {CATEGORIES.map((c) => (
             <Link
               key={c.slug}
               href={`/catalog?category=${c.slug}`}
-              className="group rounded-sm border border-line bg-surface px-4 py-7 text-center transition-all hover:border-brass hover:shadow-[0_2px_20px_-8px_rgba(33,28,22,0.25)]"
+              className="group bg-bg px-5 py-10 text-center transition-colors hover:bg-surface"
             >
-              <span className="font-display text-lg text-ink transition-colors group-hover:text-accent">
+              <span className="text-sm font-medium uppercase tracking-[0.16em] text-muted transition-colors group-hover:text-accent">
                 {c.name}
               </span>
             </Link>
@@ -60,24 +63,29 @@ export default async function HomePage() {
 
       {/* Latest arrivals */}
       <section>
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-display text-2xl font-semibold">Новые поступления</h2>
+        <div className="mb-8 flex items-end justify-between">
+          <div>
+            <p className="eyebrow text-accent">В наличии</p>
+            <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
+              Новые поступления
+            </h2>
+          </div>
           <Link
             href="/catalog"
-            className="eyebrow transition-colors hover:text-accent"
+            className="link-underline pb-1 text-xs font-medium uppercase tracking-[0.18em] text-muted hover:text-ink"
           >
             Весь каталог →
           </Link>
         </div>
         {items.length > 0 ? (
-          <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((item, i) => (
               <ItemCard key={item.id} item={item} priority={i < 4} />
             ))}
           </div>
         ) : (
-          <p className="rounded-sm border border-dashed border-line bg-surface px-4 py-12 text-center text-sm text-muted">
-            Каталог пока пуст. Подключите Supabase и примените миграции с сидами.
+          <p className="border border-dashed border-line px-4 py-16 text-center text-sm text-muted">
+            Каталог пока пуст.
           </p>
         )}
       </section>

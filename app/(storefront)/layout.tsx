@@ -12,7 +12,9 @@ export default function StorefrontLayout({
     <>
       <JsonLd data={buildOrganizationJsonLd()} />
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
+      <main className="mx-auto w-full max-w-[1280px] flex-1 px-5 py-10 md:py-14">
+        {children}
+      </main>
       <SiteFooter />
     </>
   );

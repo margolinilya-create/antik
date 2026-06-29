@@ -19,7 +19,7 @@ export function ReserveButton({
     return (
       <button
         disabled
-        className="w-full cursor-not-allowed rounded-sm bg-canvas px-5 py-3.5 text-sm font-medium uppercase tracking-[0.12em] text-muted"
+        className="w-full cursor-not-allowed border border-line px-5 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-faint"
       >
         Продано
       </button>
@@ -28,9 +28,9 @@ export function ReserveButton({
   return (
     <Link
       href={`/checkout?item=${slug}`}
-      className="block w-full rounded-sm bg-accent px-5 py-3.5 text-center text-sm font-medium uppercase tracking-[0.12em] text-cream transition-colors hover:bg-accent-deep"
+      className="block w-full bg-accent px-5 py-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-onaccent transition-colors hover:bg-accent-soft"
     >
-      {status === "reserved" ? "Узнать о предмете" : "Оставить заявку"}
+      {status === "reserved" ? "Узнать о предмете" : "Запросить предмет"}
     </Link>
   );
 }

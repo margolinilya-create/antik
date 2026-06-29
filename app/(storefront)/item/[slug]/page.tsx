@@ -87,7 +87,7 @@ export default async function ItemPage({
   ].filter(Boolean) as { label: string; value: React.ReactNode }[];
 
   return (
-    <article className="space-y-6">
+    <article className="space-y-16">
       <JsonLd data={buildProductJsonLd(item)} />
       <Breadcrumbs
         crumbs={[
@@ -100,26 +100,26 @@ export default async function ItemPage({
         ]}
       />
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
         <Gallery images={item.images} title={item.title_ru} />
 
-        <div className="space-y-5">
+        <div className="space-y-6 md:pt-4">
           <div>
-            {item.category && <p className="eyebrow mb-2">{item.category.name_ru}</p>}
-            <h1 className="font-display text-3xl font-semibold leading-tight">
+            {item.category && <p className="eyebrow mb-3 text-accent">{item.category.name_ru}</p>}
+            <h1 className="text-3xl font-light leading-tight tracking-tight sm:text-4xl">
               {item.title_ru}
             </h1>
             {item.subtitle_ru && (
-              <p className="mt-2 text-muted">{item.subtitle_ru}</p>
+              <p className="mt-3 text-muted">{item.subtitle_ru}</p>
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="font-display text-3xl font-semibold text-accent">
+          <div className="flex items-center gap-4 border-y border-line py-5">
+            <span className="text-2xl font-light tracking-wide text-ink">
               {formatPrice(item.price, item.currency, item.price_on_request)}
             </span>
             {item.status !== "in_stock" && (
-              <span className="rounded-sm bg-canvas px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-muted">
+              <span className="border border-line px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.16em] text-accent">
                 {statusLabel[item.status]}
               </span>
             )}
@@ -160,8 +160,8 @@ export default async function ItemPage({
 
       {item.description_ru && (
         <section className="max-w-3xl">
-          <h2 className="mb-3 font-display text-xl font-semibold">Описание</h2>
-          <div className="brass-rule mb-4 w-16" />
+          <h2 className="mb-3 text-lg font-medium tracking-tight">Описание</h2>
+          <div className="gold-rule mb-4 w-16" />
           <p className="whitespace-pre-line leading-relaxed text-ink/80">
             {item.description_ru}
           </p>
@@ -170,8 +170,8 @@ export default async function ItemPage({
 
       {item.provenance_ru && (
         <section className="max-w-3xl">
-          <h2 className="mb-3 font-display text-xl font-semibold">Провенанс</h2>
-          <div className="brass-rule mb-4 w-16" />
+          <h2 className="mb-3 text-lg font-medium tracking-tight">Провенанс</h2>
+          <div className="gold-rule mb-4 w-16" />
           <p className="leading-relaxed text-ink/80">{item.provenance_ru}</p>
         </section>
       )}

@@ -51,8 +51,8 @@ export default async function CategoryPage({
         ]}
       />
       <div className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-semibold">{term.name_ru}</h1>
-        <span className="text-sm text-stone-500">{total} предметов</span>
+        <h1 className="text-3xl font-light tracking-tight">{term.name_ru}</h1>
+        <span className="eyebrow">{total} предметов</span>
       </div>
 
       {items.length > 0 ? (
@@ -62,7 +62,7 @@ export default async function CategoryPage({
           ))}
         </div>
       ) : (
-        <p className="rounded-lg border border-dashed border-stone-300 bg-white px-4 py-16 text-center text-sm text-stone-500">
+        <p className="border border-dashed border-line px-4 py-16 text-center text-sm text-muted">
           В этой категории пока нет предметов.
         </p>
       )}
