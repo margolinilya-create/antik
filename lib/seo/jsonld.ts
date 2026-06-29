@@ -10,7 +10,8 @@ function availability(status: ItemStatus): string {
     case "in_stock":
       return "https://schema.org/InStock";
     case "reserved":
-      return "https://schema.org/PreOrder";
+      // A unique antique on hold is unavailable for purchase, not a pre-order.
+      return "https://schema.org/OutOfStock";
     case "sold":
       return "https://schema.org/SoldOut";
     default:
@@ -21,20 +22,24 @@ function availability(status: ItemStatus): string {
 /** Product + Offer JSON-LD for a unique antique item. */
 export function buildProductJsonLd(item: ItemDetail) {
   const url = `${env.siteUrl}/item/${item.slug}`;
-  const offer: Record<string, unknown> = {
-    "@type": "Offer",
-    url,
-    priceCurrency: item.currency,
-    availability: availability(item.status),
-    itemCondition:
-      item.condition === "restored"
-        ? "https://schema.org/RefurbishedCondition"
-        : "https://schema.org/UsedCondition",
-  };
-  // Omit price entirely when "по запросу" — required props stay valid.
-  if (!item.price_on_request && item.price != null) {
-    offer.price = item.price;
-  }
+  const hasPrice = !item.price_on_request && item.price != null;
+
+  // Google requires `price` (or priceSpecification) on an Offer. For
+  // "цена по запросу" items we omit the Offer entirely rather than emit an
+  // invalid price-less Offer — the Product stays valid, just without a price.
+  const offers = hasPrice
+    ? {
+        "@type": "Offer",
+        url,
+        price: item.price,
+        priceCurrency: item.currency,
+        availability: availability(item.status),
+        itemCondition:
+          item.condition === "restored"
+            ? "https://schema.org/RefurbishedCondition"
+            : "https://schema.org/UsedCondition",
+      }
+    : undefined;
 
   return {
     "@context": "https://schema.org",
@@ -49,7 +54,7 @@ export function buildProductJsonLd(item: ItemDetail) {
       ? { brand: { "@type": "Brand", name: item.maker.name_ru } }
       : {}),
     ...(item.year_made_text ? { releaseDate: item.year_made_text } : {}),
-    offers: offer,
+    ...(offers ? { offers } : {}),
   };
 }
 

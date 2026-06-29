@@ -112,7 +112,7 @@ export function ImageUploader({
               <button
                 type="button"
                 onClick={async () => {
-                  await deleteItemImage(img.id, img.storage_path);
+                  await deleteItemImage(img.id);
                   router.refresh();
                 }}
                 className="ml-auto text-red-500 hover:text-red-700"

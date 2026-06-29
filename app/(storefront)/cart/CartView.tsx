@@ -48,7 +48,10 @@ export function CartView() {
     );
   }
 
-  const total = items.reduce((sum, i) => sum + (i.price ?? 0), 0);
+  const total = items.reduce(
+    (sum, i) => sum + (i.price_on_request ? 0 : (i.price ?? 0)),
+    0,
+  );
   const input =
     "w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-stone-500";
 

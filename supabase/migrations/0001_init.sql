@@ -180,6 +180,9 @@ create table profiles (
   created_at timestamptz not null default now()
 );
 
+-- SECURITY DEFINER + the postgres owner (which also owns `profiles`) means this
+-- read bypasses profiles' own RLS, so the profiles policies that call is_admin()
+-- do not recurse. Do not enable FORCE ROW LEVEL SECURITY on profiles.
 create or replace function is_admin()
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (
@@ -210,8 +213,32 @@ end $$;
 create trigger items_search_tsv_trg before insert or update on items
   for each row execute function items_search_tsv_refresh();
 
+-- The FTS vector denormalises maker/category names, so renaming a taxonomy
+-- row must re-index its items. Touch affected rows to re-fire the BEFORE
+-- trigger above (which rebuilds search_tsv from the current names).
+create or replace function reindex_items_for_taxonomy()
+returns trigger language plpgsql as $$
+begin
+  if tg_table_name = 'makers' then
+    update items set maker_id = maker_id where maker_id = new.id;
+  elsif tg_table_name = 'categories' then
+    update items set category_id = category_id where category_id = new.id;
+  end if;
+  return new;
+end $$;
+
+create trigger makers_reindex after update of name_ru on makers
+  for each row when (old.name_ru is distinct from new.name_ru)
+  execute function reindex_items_for_taxonomy();
+
+create trigger categories_reindex after update of name_ru on categories
+  for each row when (old.name_ru is distinct from new.name_ru)
+  execute function reindex_items_for_taxonomy();
+
 -- Indexes -------------------------------------------------------------
-create index items_in_stock_idx on items (created_at desc) where status = 'in_stock';
+-- Matches the public visibility predicate used by RLS and search_items.
+create index items_visible_idx on items (created_at desc)
+  where status in ('in_stock', 'reserved', 'sold');
 create index items_status_idx   on items (status);
 create index items_category_idx on items (category_id);
 create index items_era_idx      on items (era_id);

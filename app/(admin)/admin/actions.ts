@@ -13,12 +13,49 @@ export interface ActionState {
   error?: string;
 }
 
-/** Revalidate the public surfaces affected by an item change. */
+type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
+
+function one<T>(v: unknown): T | null {
+  if (!v) return null;
+  return (Array.isArray(v) ? (v[0] ?? null) : v) as T;
+}
+
+/** Revalidate the always-affected public surfaces. */
 function revalidatePublic(slug?: string) {
   revalidatePath("/");
   revalidatePath("/catalog");
   revalidatePath("/sitemap.xml");
   if (slug) revalidatePath(`/item/${slug}`);
+}
+
+/** Revalidate a category/era landing page by slug (ISR-cached). */
+function revalidateTaxonomy(categorySlug?: string | null, eraSlug?: string | null) {
+  if (categorySlug) revalidatePath(`/category/${categorySlug}`);
+  if (eraSlug) revalidatePath(`/era/${eraSlug}`);
+}
+
+/**
+ * Revalidate every public surface an item appears on, resolving its slug and
+ * category/era landing slugs from the DB so callers only need the item id.
+ * Item listings on /, /catalog, /item/[slug], /category/[slug], /era/[slug]
+ * are all ISR-cached and must be invalidated on any item mutation.
+ */
+async function revalidateItem(supabase: SupabaseServer, itemId: string) {
+  const { data } = await supabase
+    .from("items")
+    .select("slug, category:categories(slug), era:eras(slug)")
+    .eq("id", itemId)
+    .single();
+  const row = data as {
+    slug: string;
+    category: { slug: string } | { slug: string }[] | null;
+    era: { slug: string } | { slug: string }[] | null;
+  } | null;
+  revalidatePublic(row?.slug);
+  revalidateTaxonomy(
+    one<{ slug: string }>(row?.category)?.slug,
+    one<{ slug: string }>(row?.era)?.slug,
+  );
 }
 
 async function ensureAdmin() {
@@ -77,11 +114,25 @@ export async function saveItem(
 
   const slug = d.slug || slugify(d.title_ru);
   const { material_ids, technique_ids, ...itemFields } = d;
-
   const record: Record<string, unknown> = { ...itemFields, slug };
-  // Stamp lifecycle timestamps on transitions.
-  if (d.status === "in_stock") record.published_at = new Date().toISOString();
-  if (d.status === "sold") record.sold_at = new Date().toISOString();
+
+  // Preserve original publish/sold timestamps: stamp only on the first
+  // transition into the status, never overwrite an existing value on re-save.
+  let existing: { published_at: string | null; sold_at: string | null } | null = null;
+  if (id) {
+    const { data } = await supabase
+      .from("items")
+      .select("published_at, sold_at")
+      .eq("id", id)
+      .single();
+    existing = (data as { published_at: string | null; sold_at: string | null }) ?? null;
+  }
+  if (d.status === "in_stock" && !existing?.published_at) {
+    record.published_at = new Date().toISOString();
+  }
+  if (d.status === "sold" && !existing?.sold_at) {
+    record.sold_at = new Date().toISOString();
+  }
 
   let itemId = id;
   if (id) {
@@ -113,7 +164,7 @@ export async function saveItem(
       .insert(technique_ids.map((t) => ({ item_id: itemId, technique_id: t })));
   }
 
-  revalidatePublic(slug);
+  await revalidateItem(supabase, itemId);
 
   if (!id) redirect(`/admin/items/${itemId}/edit`);
   return { ok: true };
@@ -129,8 +180,22 @@ function slugError(msg: string): string {
 export async function deleteItem(id: string, slug: string): Promise<void> {
   await ensureAdmin();
   const supabase = await createClient();
+  // Capture taxonomy slugs before the row is gone, to revalidate its landings.
+  const { data } = await supabase
+    .from("items")
+    .select("category:categories(slug), era:eras(slug)")
+    .eq("id", id)
+    .single();
+  const row = data as {
+    category: { slug: string } | { slug: string }[] | null;
+    era: { slug: string } | { slug: string }[] | null;
+  } | null;
   await supabase.from("items").delete().eq("id", id);
   revalidatePublic(slug);
+  revalidateTaxonomy(
+    one<{ slug: string }>(row?.category)?.slug,
+    one<{ slug: string }>(row?.era)?.slug,
+  );
   redirect("/admin/items");
 }
 
@@ -141,11 +206,22 @@ export async function setItemStatus(
 ): Promise<void> {
   await ensureAdmin();
   const supabase = await createClient();
+
+  // Only stamp on the first transition into the status; preserve existing.
+  const { data } = await supabase
+    .from("items")
+    .select("published_at, sold_at")
+    .eq("id", id)
+    .single();
+  const prev = data as { published_at: string | null; sold_at: string | null } | null;
+
   const patch: Record<string, unknown> = { status };
-  if (status === "sold") patch.sold_at = new Date().toISOString();
-  if (status === "in_stock") patch.published_at = new Date().toISOString();
+  if (status === "sold" && !prev?.sold_at) patch.sold_at = new Date().toISOString();
+  if (status === "in_stock" && !prev?.published_at) {
+    patch.published_at = new Date().toISOString();
+  }
   await supabase.from("items").update(patch).eq("id", id);
-  revalidatePublic(slug);
+  await revalidateItem(supabase, id);
   revalidatePath("/admin/items");
 }
 
@@ -161,6 +237,11 @@ export async function addItemImage(input: {
     await ensureAdmin();
   } catch {
     return { error: "Нет доступа" };
+  }
+  // Enforce the path convention server-side: an image must live under its
+  // own item's prefix. Prevents registering an arbitrary storage object.
+  if (!input.storage_path.startsWith(`items/${input.item_id}/`)) {
+    return { error: "Недопустимый путь файла" };
   }
   const supabase = await createClient();
 
@@ -180,18 +261,25 @@ export async function addItemImage(input: {
     is_primary: (count ?? 0) === 0,
   });
   if (error) return { error: "Не удалось сохранить изображение" };
+  await revalidateItem(supabase, input.item_id);
   revalidatePath("/admin/items");
   return { ok: true };
 }
 
-export async function deleteItemImage(
-  id: string,
-  storagePath: string,
-): Promise<void> {
+export async function deleteItemImage(id: string): Promise<void> {
   await ensureAdmin();
   const supabase = await createClient();
-  await supabase.storage.from("item-images").remove([storagePath]);
+  // Resolve the stored path from the row itself — never trust a caller path.
+  const { data } = await supabase
+    .from("item_images")
+    .select("storage_path, item_id")
+    .eq("id", id)
+    .single();
+  const row = data as { storage_path: string; item_id: string } | null;
+  if (!row) return;
+  await supabase.storage.from("item-images").remove([row.storage_path]);
   await supabase.from("item_images").delete().eq("id", id);
+  await revalidateItem(supabase, row.item_id);
   revalidatePath("/admin/items");
 }
 
@@ -206,6 +294,7 @@ export async function setPrimaryImage(
     .update({ is_primary: false })
     .eq("item_id", itemId);
   await supabase.from("item_images").update({ is_primary: true }).eq("id", imageId);
+  await revalidateItem(supabase, itemId);
   revalidatePath("/admin/items");
 }
 

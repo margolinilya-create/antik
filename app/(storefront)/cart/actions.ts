@@ -16,6 +16,21 @@ interface SnapshotItem {
   price: number | null;
 }
 
+const MAX_CART = 50;
+
+function parseSlugs(raw: unknown): string[] {
+  try {
+    const arr = JSON.parse(String(raw ?? "[]"));
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .map((i) => (i && typeof i.slug === "string" ? i.slug : null))
+      .filter((s): s is string => Boolean(s))
+      .slice(0, MAX_CART);
+  } catch {
+    return [];
+  }
+}
+
 /** Multi-item lead from the cart ("подборка"). */
 export async function submitCartInquiry(
   _prev: CartInquiryState,
@@ -33,20 +48,39 @@ export async function submitCartInquiry(
     return { error: parsed.error.issues[0]?.message ?? "Проверьте поля формы" };
   }
 
-  let snapshot: SnapshotItem[] = [];
-  try {
-    snapshot = JSON.parse(String(formData.get("snapshot") ?? "[]"));
-  } catch {
-    snapshot = [];
-  }
-  if (snapshot.length === 0) return { error: "Подборка пуста" };
+  const slugs = parseSlugs(formData.get("snapshot"));
+  if (slugs.length === 0) return { error: "Подборка пуста" };
 
   if (!isSupabaseConfigured) {
     return { error: "Сервер не настроен. Подключите Supabase." };
   }
 
-  const total = snapshot.reduce((sum, i) => sum + (i.price ?? 0), 0);
   const supabase = await createClient();
+
+  // Re-resolve items from the DB — never trust client-supplied titles/prices.
+  // Only publicly-sellable items are accepted (RLS also enforces this).
+  const { data: rows } = await supabase
+    .from("items")
+    .select("slug, title_ru, price, price_on_request, status")
+    .in("slug", slugs)
+    .in("status", ["in_stock", "reserved"]);
+
+  const snapshot: SnapshotItem[] = ((rows as {
+    slug: string;
+    title_ru: string;
+    price: number | null;
+    price_on_request: boolean;
+  }[]) ?? []).map((r) => ({
+    slug: r.slug,
+    title: r.title_ru,
+    price: r.price_on_request ? null : r.price,
+  }));
+
+  if (snapshot.length === 0) {
+    return { error: "Выбранные предметы недоступны." };
+  }
+
+  const total = snapshot.reduce((sum, i) => sum + (i.price ?? 0), 0);
   const { error } = await supabase.from("inquiries").insert({
     type: "reserve",
     customer_name: parsed.data.customer_name,
