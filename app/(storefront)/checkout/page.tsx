@@ -22,25 +22,25 @@ export default async function CheckoutPage({
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
-      <h1 className="text-2xl font-semibold">Оставить заявку</h1>
+      <h1 className="font-display text-3xl font-semibold">Оставить заявку</h1>
 
       {item && (
-        <div className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-4 py-3">
+        <div className="flex items-center justify-between rounded-sm border border-line bg-surface px-4 py-3">
           <div>
-            <Link href={`/item/${item.slug}`} className="font-medium hover:underline">
+            <Link href={`/item/${item.slug}`} className="font-display text-lg hover:text-accent">
               {item.title_ru}
             </Link>
             {item.subtitle_ru && (
-              <p className="text-sm text-stone-500">{item.subtitle_ru}</p>
+              <p className="text-sm text-muted">{item.subtitle_ru}</p>
             )}
           </div>
-          <span className="text-sm font-semibold">
+          <span className="font-display font-semibold text-accent">
             {formatPrice(item.price, item.currency, item.price_on_request)}
           </span>
         </div>
       )}
 
-      <p className="text-sm text-stone-600">
+      <p className="text-sm text-ink/70">
         Оставьте контакты — мы свяжемся с вами, ответим на вопросы и согласуем
         условия. Предмет можно забронировать.
       </p>

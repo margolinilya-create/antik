@@ -22,10 +22,10 @@ export default async function SearchPage({
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-semibold">
+      <h1 className="font-display text-3xl font-semibold">
         {q ? `Результаты поиска: «${q}»` : "Поиск"}
       </h1>
-      {q && <p className="text-sm text-stone-500">Найдено: {total}</p>}
+      {q && <p className="eyebrow">Найдено: {total}</p>}
 
       {items.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -34,7 +34,7 @@ export default async function SearchPage({
           ))}
         </div>
       ) : (
-        <p className="rounded-lg border border-dashed border-stone-300 bg-white px-4 py-16 text-center text-sm text-stone-500">
+        <p className="rounded-sm border border-dashed border-line bg-surface px-4 py-16 text-center text-sm text-muted">
           {q ? "Ничего не найдено. Попробуйте другой запрос." : "Введите запрос для поиска."}
         </p>
       )}

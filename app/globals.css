@@ -1,16 +1,51 @@
 @import "tailwindcss";
 
-:root {
-  --background: #fafaf9; /* stone-50 */
-  --foreground: #1c1917; /* stone-900 */
+/* =====================================================================
+   Антик — premium heritage design system
+   Warm parchment canvas · oxblood authority accent · brass gilt details ·
+   deep forest-green for hero/footer · editorial serif + clean sans.
+   ===================================================================== */
+@theme {
+  --color-canvas: #f6f0e4;      /* warm parchment — page background */
+  --color-surface: #fffdf8;     /* warm white — cards */
+  --color-ink: #211c16;         /* warm near-black — text */
+  --color-muted: #6f6557;       /* warm gray-brown — secondary text */
+  --color-accent: #7c2d27;      /* oxblood — CTAs, price, links */
+  --color-accent-deep: #5f211c; /* darker oxblood — hover */
+  --color-brass: #a9863f;       /* brass / gilt — fine accents, hairlines */
+  --color-forest: #232d26;      /* deep charcoal-green — hero / footer */
+  --color-cream: #f3ead9;       /* light cream — on-dark text/surfaces */
+  --color-line: #e6dcc9;        /* warm hairline border */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --font-sans: var(--ff-sans);
+  --font-display: var(--ff-display);
 }
 
 body {
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--ff-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-cream);
+}
+
+/* Small uppercase letterspaced label — a museum-label signature detail. */
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Thin brass divider used under headings / in the hero. */
+.brass-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-brass), transparent);
 }

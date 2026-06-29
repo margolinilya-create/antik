@@ -10,18 +10,18 @@ export interface Crumb {
 /** Visual breadcrumb trail + matching BreadcrumbList structured data. */
 export function Breadcrumbs({ crumbs }: { crumbs: Crumb[] }) {
   return (
-    <nav aria-label="Хлебные крошки" className="text-sm text-stone-500">
+    <nav aria-label="Хлебные крошки" className="text-sm text-muted">
       <JsonLd data={buildBreadcrumbJsonLd(crumbs)} />
       <ol className="flex flex-wrap items-center gap-1.5">
         {crumbs.map((c, i) => (
           <li key={c.url} className="flex items-center gap-1.5">
-            {i > 0 && <span aria-hidden>/</span>}
+            {i > 0 && <span aria-hidden className="text-brass/60">/</span>}
             {i < crumbs.length - 1 ? (
-              <Link href={c.url} className="hover:text-stone-900">
+              <Link href={c.url} className="transition-colors hover:text-accent">
                 {c.name}
               </Link>
             ) : (
-              <span className="text-stone-700">{c.name}</span>
+              <span className="text-ink">{c.name}</span>
             )}
           </li>
         ))}

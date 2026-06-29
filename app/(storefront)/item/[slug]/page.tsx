@@ -105,18 +105,21 @@ export default async function ItemPage({
 
         <div className="space-y-5">
           <div>
-            <h1 className="text-2xl font-semibold">{item.title_ru}</h1>
+            {item.category && <p className="eyebrow mb-2">{item.category.name_ru}</p>}
+            <h1 className="font-display text-3xl font-semibold leading-tight">
+              {item.title_ru}
+            </h1>
             {item.subtitle_ru && (
-              <p className="mt-1 text-stone-500">{item.subtitle_ru}</p>
+              <p className="mt-2 text-muted">{item.subtitle_ru}</p>
             )}
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-semibold">
+            <span className="font-display text-3xl font-semibold text-accent">
               {formatPrice(item.price, item.currency, item.price_on_request)}
             </span>
             {item.status !== "in_stock" && (
-              <span className="rounded bg-stone-100 px-2 py-1 text-xs text-stone-600">
+              <span className="rounded-sm bg-canvas px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-muted">
                 {statusLabel[item.status]}
               </span>
             )}
@@ -141,11 +144,13 @@ export default async function ItemPage({
           </div>
 
           {specs.length > 0 && (
-            <dl className="divide-y divide-stone-200 rounded-lg border border-stone-200 bg-white text-sm">
+            <dl className="divide-y divide-line rounded-sm border border-line bg-surface text-sm">
               {specs.map((s, i) => (
-                <div key={i} className="flex justify-between gap-4 px-4 py-2.5">
-                  <dt className="text-stone-500">{s.label}</dt>
-                  <dd className="text-right text-stone-900">{s.value}</dd>
+                <div key={i} className="flex justify-between gap-4 px-4 py-3">
+                  <dt className="text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+                    {s.label}
+                  </dt>
+                  <dd className="text-right font-medium text-ink">{s.value}</dd>
                 </div>
               ))}
             </dl>
@@ -155,8 +160,9 @@ export default async function ItemPage({
 
       {item.description_ru && (
         <section className="max-w-3xl">
-          <h2 className="mb-2 text-lg font-semibold">Описание</h2>
-          <p className="whitespace-pre-line leading-relaxed text-stone-700">
+          <h2 className="mb-3 font-display text-xl font-semibold">Описание</h2>
+          <div className="brass-rule mb-4 w-16" />
+          <p className="whitespace-pre-line leading-relaxed text-ink/80">
             {item.description_ru}
           </p>
         </section>
@@ -164,8 +170,9 @@ export default async function ItemPage({
 
       {item.provenance_ru && (
         <section className="max-w-3xl">
-          <h2 className="mb-2 text-lg font-semibold">Провенанс</h2>
-          <p className="leading-relaxed text-stone-700">{item.provenance_ru}</p>
+          <h2 className="mb-3 font-display text-xl font-semibold">Провенанс</h2>
+          <div className="brass-rule mb-4 w-16" />
+          <p className="leading-relaxed text-ink/80">{item.provenance_ru}</p>
         </section>
       )}
     </article>

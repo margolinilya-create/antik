@@ -29,24 +29,24 @@ function FacetGroup({
 }) {
   if (values.length === 0) return null;
   return (
-    <div className="border-b border-stone-200 py-4">
-      <h3 className="mb-2 text-sm font-semibold">{title}</h3>
-      <ul className="space-y-1">
+    <div className="border-b border-line py-4">
+      <h3 className="eyebrow mb-3">{title}</h3>
+      <ul className="space-y-1.5">
         {values.map((v) => {
           const active = params[facetKey] === v.slug;
           return (
             <li key={v.slug}>
               <Link
                 href={toggleHref(params, facetKey, v.slug)}
-                className={`flex items-center justify-between text-sm hover:text-stone-900 ${
-                  active ? "font-medium text-stone-900" : "text-stone-600"
+                className={`flex items-center justify-between text-sm transition-colors hover:text-accent ${
+                  active ? "font-medium text-accent" : "text-ink/80"
                 }`}
               >
                 <span>
                   {active && "✓ "}
                   {v.name}
                 </span>
-                <span className="text-xs text-stone-400">{v.count}</span>
+                <span className="text-xs text-muted">{v.count}</span>
               </Link>
             </li>
           );
@@ -71,7 +71,7 @@ export function FacetSidebar({
       {hasActive && (
         <Link
           href="/catalog"
-          className="mb-3 inline-block text-sm text-stone-500 hover:text-stone-900"
+          className="mb-3 inline-block text-sm text-muted transition-colors hover:text-accent"
         >
           ✕ Сбросить фильтры
         </Link>
@@ -81,8 +81,8 @@ export function FacetSidebar({
       <FacetGroup title="Мастер / автор" facetKey="maker" values={facets.makers} params={params} />
       <FacetGroup title="Материал" facetKey="material" values={facets.materials} params={params} />
       {facets.price && facets.price.min != null && (
-        <div className="py-4 text-sm text-stone-600">
-          <h3 className="mb-1 text-sm font-semibold text-stone-900">Цена</h3>
+        <div className="py-4 text-sm text-ink/80">
+          <h3 className="eyebrow mb-2">Цена</h3>
           от {formatPrice(facets.price.min)} до {formatPrice(facets.price.max)}
         </div>
       )}

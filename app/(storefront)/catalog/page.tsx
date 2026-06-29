@@ -56,9 +56,9 @@ export default async function CatalogPage({
           { name: "Каталог", url: "/catalog" },
         ]}
       />
-      <div className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-semibold">Каталог</h1>
-        <span className="text-sm text-stone-500">{total} предметов</span>
+      <div className="flex items-baseline justify-between border-b border-line pb-4">
+        <h1 className="font-display text-3xl font-semibold">Каталог</h1>
+        <span className="eyebrow">{total} предметов</span>
       </div>
 
       <div className="flex flex-col gap-8 md:flex-row">
@@ -77,7 +77,7 @@ export default async function CatalogPage({
               )}
             </>
           ) : (
-            <p className="rounded-lg border border-dashed border-stone-300 bg-white px-4 py-16 text-center text-sm text-stone-500">
+            <p className="rounded-sm border border-dashed border-line bg-surface px-4 py-16 text-center text-sm text-muted">
               Ничего не найдено. Попробуйте сбросить фильтры.
             </p>
           )}
