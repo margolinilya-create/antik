@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+# Public, browser-safe Supabase keys for the Vercel build (publishable anon key).
+# Secrets (service role, revalidate secret) are NEVER committed.
+!.env.production
 
 # vercel
 .vercel

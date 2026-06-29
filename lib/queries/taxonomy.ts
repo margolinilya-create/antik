@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import { isSupabaseConfigured } from "@/lib/env";
 
 export interface TaxonomyTerm {
@@ -16,7 +16,7 @@ export async function getTaxonomyTerm(
   slug: string,
 ): Promise<TaxonomyTerm | null> {
   if (!isSupabaseConfigured) return null;
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from(table)
     .select("slug, name_ru, seo_title, seo_description")
@@ -27,7 +27,7 @@ export async function getTaxonomyTerm(
 
 export async function getTaxonomySlugs(table: TaxonomyTable): Promise<string[]> {
   if (!isSupabaseConfigured) return [];
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase.from(table).select("slug");
   return (data ?? []).map((r) => (r as { slug: string }).slug);
 }

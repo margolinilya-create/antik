@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import { isSupabaseConfigured } from "@/lib/env";
 import type {
   ItemDetail,
@@ -35,7 +35,7 @@ export async function searchItems(filters: SearchFilters): Promise<SearchResult>
   if (!isSupabaseConfigured) {
     return { items: [], total: 0, facets: EMPTY_FACETS };
   }
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data, error } = await supabase.rpc("search_items", { filters });
   if (error || !data) {
     return { items: [], total: 0, facets: EMPTY_FACETS };
@@ -46,7 +46,7 @@ export async function searchItems(filters: SearchFilters): Promise<SearchResult>
 /** All published slugs for generateStaticParams / sitemap. */
 export async function getPublishedSlugs(): Promise<{ slug: string; updated_at: string }[]> {
   if (!isSupabaseConfigured) return [];
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from("items")
     .select("slug, updated_at")
@@ -57,7 +57,7 @@ export async function getPublishedSlugs(): Promise<{ slug: string; updated_at: s
 /** Single item detail by slug, with joined taxonomy + images. */
 export async function getItemBySlug(slug: string): Promise<ItemDetail | null> {
   if (!isSupabaseConfigured) return null;
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data, error } = await supabase
     .from("items")
     .select(
