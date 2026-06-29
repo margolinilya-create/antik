@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { Gallery } from "@/components/item/Gallery";
 import { ReserveButton } from "@/components/item/ReserveButton";
+import { AddToCartButton } from "@/components/item/AddToCartButton";
+import { imageUrl } from "@/lib/supabase/storage";
 import { buildProductJsonLd } from "@/lib/seo/jsonld";
 import {
   formatPrice,
@@ -120,7 +122,23 @@ export default async function ItemPage({
             )}
           </div>
 
-          <ReserveButton slug={item.slug} status={item.status} />
+          <div className="space-y-2">
+            <ReserveButton slug={item.slug} status={item.status} />
+            {item.status !== "sold" && (
+              <AddToCartButton
+                item={{
+                  slug: item.slug,
+                  title: item.title_ru,
+                  price: item.price,
+                  currency: item.currency,
+                  price_on_request: item.price_on_request,
+                  image: item.images[0]
+                    ? imageUrl(item.images[0].storage_path, { width: 200 })
+                    : null,
+                }}
+              />
+            )}
+          </div>
 
           {specs.length > 0 && (
             <dl className="divide-y divide-stone-200 rounded-lg border border-stone-200 bg-white text-sm">

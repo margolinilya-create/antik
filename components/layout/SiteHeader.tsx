@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { CartLink } from "./CartLink";
 
 const NAV = [
   { href: "/catalog?category=samovary", label: "Самовары" },
@@ -34,10 +35,11 @@ export function SiteHeader() {
               type="search"
               placeholder="Поиск по каталогу…"
               aria-label="Поиск по каталогу"
-              className="w-44 rounded-md border border-stone-300 bg-white py-1.5 pl-8 pr-3 text-sm outline-none focus:border-stone-500 sm:w-64"
+              className="w-40 rounded-md border border-stone-300 bg-white py-1.5 pl-8 pr-3 text-sm outline-none focus:border-stone-500 sm:w-56"
             />
           </div>
         </form>
+        <CartLink />
       </div>
     </header>
   );
