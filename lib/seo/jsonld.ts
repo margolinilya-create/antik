@@ -73,6 +73,27 @@ export function buildBreadcrumbJsonLd(
   };
 }
 
+export function buildBrandJsonLd(maker: {
+  slug: string;
+  name_ru: string;
+  name_en: string | null;
+  country: string | null;
+  founded: string | null;
+  bio_ru: string | null;
+  seo_description: string | null;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Brand",
+    name: maker.name_ru,
+    alternateName: maker.name_en ?? undefined,
+    url: `${env.siteUrl}/maker/${maker.slug}`,
+    description: maker.seo_description ?? maker.bio_ru ?? undefined,
+    foundingDate: maker.founded ?? undefined,
+    ...(maker.country ? { areaServed: maker.country } : {}),
+  };
+}
+
 export function buildOrganizationJsonLd() {
   return {
     "@context": "https://schema.org",

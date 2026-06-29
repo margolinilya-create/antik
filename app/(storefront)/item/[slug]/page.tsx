@@ -67,7 +67,7 @@ export default async function ItemPage({
   const specs: { label: string; value: React.ReactNode }[] = [
     item.maker && {
       label: "Мастер / автор",
-      value: <Link href={`/catalog?maker=${item.maker.slug}`} className="hover:underline">{item.maker.name_ru}</Link>,
+      value: <Link href={`/maker/${item.maker.slug}`} className="text-accent transition-colors hover:text-accent-soft">{item.maker.name_ru}</Link>,
     },
     item.era && {
       label: "Эпоха",

@@ -14,6 +14,7 @@ const COLS = [
     title: "Навигация",
     links: [
       { href: "/catalog", label: "Весь каталог" },
+      { href: "/brands", label: "Бренды" },
       { href: "/search", label: "Поиск" },
       { href: "/cart", label: "Подборка" },
     ],

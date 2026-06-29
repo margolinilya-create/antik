@@ -7,6 +7,7 @@ const NAV = [
   { href: "/catalog?category=ikony", label: "Иконы" },
   { href: "/catalog?category=farfor", label: "Фарфор" },
   { href: "/catalog?category=samovary", label: "Самовары" },
+  { href: "/brands", label: "Бренды" },
   { href: "/catalog", label: "Каталог" },
 ];
 
