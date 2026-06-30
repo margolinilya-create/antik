@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   listJournalPosts,
   listFeaturedJournalPosts,
 } from "@/lib/queries/content";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { JournalCard } from "@/components/journal/JournalCard";
-import { JournalCover } from "@/components/journal/JournalCover";
-import { journalTheme } from "@/lib/journal-art";
+import { JournalRow } from "@/components/journal/JournalRow";
 
 export const revalidate = 3600;
 
@@ -24,12 +21,11 @@ export default async function JournalPage() {
     listJournalPosts(24),
   ]);
 
-  const [lead, ...secondary] = featured;
   const featuredSlugs = new Set(featured.map((p) => p.slug));
   const rest = posts.filter((p) => !featuredSlugs.has(p.slug));
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12">
       <Breadcrumbs
         crumbs={[
           { name: "Главная", url: "/" },
@@ -48,83 +44,29 @@ export default async function JournalPage() {
         </p>
       </header>
 
-      {/* Топ журнала — editorial featured selection */}
-      {lead && (
+      {/* Топ журнала — editorial rows */}
+      {featured.length > 0 && (
         <section>
-          <div className="mb-6 flex items-center gap-6">
+          <div className="mb-2 flex items-center gap-6">
             <p className="eyebrow text-accent">Топ журнала</p>
             <div className="gold-rule flex-1" />
           </div>
-          <div className="grid gap-px border border-line bg-line lg:grid-cols-2">
-            {/* Lead article */}
-            <Link
-              href={`/journal/${lead.slug}`}
-              className="group flex flex-col bg-bg transition-colors hover:bg-surface"
-            >
-              <JournalCover
-                post={lead}
-                priority
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="aspect-[16/10] w-full"
-              />
-              <div className="flex flex-1 flex-col p-7">
-                <span className="text-[0.66rem] uppercase tracking-[0.18em] text-accent">
-                  {journalTheme(lead).label}
-                </span>
-                <h2 className="mt-4 font-display text-2xl font-medium leading-tight tracking-tight text-ink transition-colors group-hover:text-accent sm:text-3xl">
-                  {lead.title_ru}
-                </h2>
-                {lead.excerpt_ru && (
-                  <p className="mt-3 leading-relaxed text-muted">
-                    {lead.excerpt_ru}
-                  </p>
-                )}
-                <span className="mt-auto pt-6 text-[0.72rem] uppercase tracking-[0.16em] text-accent">
-                  Читать →
-                </span>
-              </div>
-            </Link>
-
-            {/* Secondary featured — compact rows */}
-            <div className="grid bg-line sm:grid-cols-2 lg:grid-cols-1">
-              {secondary.map((p) => (
-                <Link
-                  key={p.slug}
-                  href={`/journal/${p.slug}`}
-                  className="group flex gap-4 bg-bg p-6 transition-colors hover:bg-surface"
-                >
-                  <JournalCover
-                    post={p}
-                    sizes="160px"
-                    className="aspect-square w-24 shrink-0 sm:w-28"
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-[0.62rem] uppercase tracking-[0.18em] text-accent">
-                      {journalTheme(p).label}
-                    </span>
-                    <h3 className="mt-2 text-base font-light leading-snug tracking-tight text-ink transition-colors group-hover:text-accent">
-                      {p.title_ru}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
+          {featured.map((p, i) => (
+            <JournalRow key={p.slug} post={p} index={i} priority={i === 0} />
+          ))}
         </section>
       )}
 
       {/* Все статьи */}
       {rest.length > 0 && (
         <section>
-          <div className="mb-6 flex items-center gap-6">
+          <div className="mb-2 flex items-center gap-6">
             <p className="eyebrow">Все статьи</p>
             <div className="gold-rule flex-1" />
           </div>
-          <div className="grid gap-px border border-line bg-line md:grid-cols-2 lg:grid-cols-3">
-            {rest.map((p, i) => (
-              <JournalCard key={p.slug} post={p} priority={i < 3} />
-            ))}
-          </div>
+          {rest.map((p, i) => (
+            <JournalRow key={p.slug} post={p} index={featured.length + i} />
+          ))}
         </section>
       )}
 

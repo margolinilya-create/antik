@@ -32,7 +32,7 @@ export function JournalCover({
 
   if (src) {
     return (
-      <div className={`relative overflow-hidden bg-surface ${className}`}>
+      <div className={`relative overflow-hidden ${className}`}>
         <Image
           src={src}
           alt=""
