@@ -93,7 +93,10 @@ export function buildBrandJsonLd(maker: {
   };
 }
 
-export function buildOrganizationJsonLd() {
+export function buildOrganizationJsonLd(rating?: {
+  ratingValue: number;
+  reviewCount: number;
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "Store",
@@ -123,6 +126,54 @@ export function buildOrganizationJsonLd() {
       availableLanguage: ["ru"],
     },
     sameAs: [site.telegramHref],
+    // Aggregated from real published testimonials (omitted when none exist).
+    ...(rating && rating.reviewCount > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: rating.ratingValue,
+            reviewCount: rating.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+  };
+}
+
+/** WebSite + SearchAction — enables the sitelinks search box in SERPs. */
+export function buildWebsiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site.url}/#website`,
+    url: site.url,
+    name: site.name,
+    inLanguage: "ru-RU",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${site.url}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+/** ItemList for a catalog/category/era grid (URL list only — no pricing here). */
+export function buildItemListJsonLd(
+  items: { slug: string; title_ru: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${site.url}/item/${it.slug}`,
+      name: it.title_ru,
+    })),
   };
 }
 

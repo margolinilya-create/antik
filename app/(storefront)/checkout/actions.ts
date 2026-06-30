@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import { inquirySchema } from "@/lib/validation/inquiry";
 import { notifyNewInquiry } from "@/lib/notify";
+import { leadRateLimited } from "@/lib/ratelimit";
 
 export interface InquiryState {
   ok?: boolean;
@@ -32,6 +33,10 @@ export async function submitInquiry(
   // 152-ФЗ personal-data consent is required.
   if (formData.get("consent") !== "1") {
     return { error: "Подтвердите согласие на обработку персональных данных" };
+  }
+
+  if (await leadRateLimited()) {
+    return { error: "Слишком много обращений. Попробуйте позже." };
   }
 
   if (!isSupabaseConfigured) {

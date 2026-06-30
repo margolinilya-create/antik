@@ -4,6 +4,8 @@ import { searchItems } from "@/lib/queries/items";
 import { getTaxonomyTerm, getTaxonomySlugs } from "@/lib/queries/taxonomy";
 import { ItemCard } from "@/components/catalog/ItemCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildItemListJsonLd } from "@/lib/seo/jsonld";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -43,6 +45,7 @@ export default async function EraPage({
 
   return (
     <div className="space-y-5">
+      {items.length > 0 && <JsonLd data={buildItemListJsonLd(items)} />}
       <Breadcrumbs
         crumbs={[
           { name: "Главная", url: "/" },

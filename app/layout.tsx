@@ -2,6 +2,15 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { env } from "@/lib/env";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebsiteJsonLd } from "@/lib/seo/jsonld";
+import { YandexMetrica } from "@/components/analytics/YandexMetrica";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+
+const ymId = process.env.NEXT_PUBLIC_YANDEX_METRICA_ID;
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
+const yandexVerification = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION;
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION;
 
 // Body / UI — modern, Cyrillic-capable geometric sans.
 const sans = Manrope({
@@ -36,6 +45,10 @@ export const metadata: Metadata = {
     apple: [{ url: "/icon.svg" }],
   },
   robots: { index: true, follow: true },
+  verification: {
+    ...(yandexVerification ? { yandex: yandexVerification } : {}),
+    ...(googleVerification ? { google: googleVerification } : {}),
+  },
 };
 
 export const viewport: Viewport = {
@@ -50,7 +63,12 @@ export default function RootLayout({
       lang="ru"
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-bg text-ink">{children}</body>
+      <body className="flex min-h-full flex-col bg-bg text-ink">
+        <JsonLd data={buildWebsiteJsonLd()} />
+        {children}
+        {ymId && <YandexMetrica id={ymId} />}
+        {gaId && <GoogleAnalytics id={gaId} />}
+      </body>
     </html>
   );
 }

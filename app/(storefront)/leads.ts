@@ -3,12 +3,15 @@
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
-import { notifyNewInquiry } from "@/lib/notify";
+import { notifyNewInquiry, notifyNewSubscriber } from "@/lib/notify";
+import { leadRateLimited } from "@/lib/ratelimit";
 
 export interface LeadState {
   ok?: boolean;
   error?: string;
 }
+
+const RATE_ERROR = "Слишком много обращений. Попробуйте позже.";
 
 const contact = z
   .object({
@@ -75,6 +78,7 @@ export async function subscribeNewsletter(
     return { error: "Введите корректный email" };
   }
   if (!hasConsent(formData)) return { error: CONSENT_ERROR };
+  if (await leadRateLimited()) return { error: RATE_ERROR };
   if (!isSupabaseConfigured) return notConfigured();
   const supabase = await createClient();
   const { error } = await supabase
@@ -86,6 +90,7 @@ export async function subscribeNewsletter(
   if (error && !isDuplicate) {
     return { error: "Не удалось подписаться. Попробуйте позже." };
   }
+  if (!error) await notifyNewSubscriber(email); // new subscriber only
   return { ok: true };
 }
 
@@ -103,6 +108,7 @@ export async function makeOffer(
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
   if (!hasConsent(formData)) return { error: CONSENT_ERROR };
+  if (await leadRateLimited()) return { error: RATE_ERROR };
 
   const amount = parseRubAmount(String(formData.get("offer_amount") ?? ""));
   if (!Number.isFinite(amount) || amount <= 0) {
@@ -153,6 +159,7 @@ export async function sellRequest(
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
   if (!hasConsent(formData)) return { error: CONSENT_ERROR };
+  if (await leadRateLimited()) return { error: RATE_ERROR };
   if (!isSupabaseConfigured) return notConfigured();
 
   const supabase = await createClient();

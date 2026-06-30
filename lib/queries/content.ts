@@ -36,6 +36,26 @@ export async function listTestimonials(limit = 6): Promise<Testimonial[]> {
   return (data as Testimonial[]) ?? [];
 }
 
+/** Aggregate rating across published testimonials (for Organization JSON-LD). */
+export async function getTestimonialStats(): Promise<{
+  ratingValue: number;
+  reviewCount: number;
+}> {
+  if (!isSupabaseConfigured) return { ratingValue: 0, reviewCount: 0 };
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("testimonials")
+    .select("rating")
+    .eq("is_published", true);
+  const rows = (data as { rating: number }[]) ?? [];
+  if (rows.length === 0) return { ratingValue: 0, reviewCount: 0 };
+  const avg = rows.reduce((s, r) => s + (r.rating ?? 0), 0) / rows.length;
+  return {
+    ratingValue: Math.round(avg * 10) / 10,
+    reviewCount: rows.length,
+  };
+}
+
 export async function listJournalPosts(limit = 12): Promise<JournalPost[]> {
   if (!isSupabaseConfigured) return [];
   const supabase = createStaticClient();

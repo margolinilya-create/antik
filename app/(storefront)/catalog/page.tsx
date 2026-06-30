@@ -5,6 +5,8 @@ import { ItemCard } from "@/components/catalog/ItemCard";
 import { FacetSidebar } from "@/components/catalog/FacetSidebar";
 import { SortSelect } from "@/components/catalog/SortSelect";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildItemListJsonLd } from "@/lib/seo/jsonld";
 
 export const metadata: Metadata = {
   title: "Каталог антиквариата",
@@ -52,6 +54,7 @@ export default async function CatalogPage({
 
   return (
     <div className="space-y-5">
+      {items.length > 0 && <JsonLd data={buildItemListJsonLd(items)} />}
       <Breadcrumbs
         crumbs={[
           { name: "Главная", url: "/" },

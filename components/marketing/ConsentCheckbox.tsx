@@ -23,7 +23,7 @@ export function ConsentCheckbox({ id = "consent" }: { id?: string }) {
         <Link
           href="/politika-konfidencialnosti"
           target="_blank"
-          className="text-accent underline-offset-2 hover:underline"
+          className="text-accent underline underline-offset-2"
         >
           Политикой конфиденциальности
         </Link>

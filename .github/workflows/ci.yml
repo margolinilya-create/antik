@@ -53,8 +53,8 @@ jobs:
       # the default cache (~/.cache/ms-playwright); the test run must read from
       # the same place. Setting it to "0" here pointed at node_modules/.local-
       # browsers, where nothing was installed -> "Executable doesn't exist".
-      - name: E2E (functional)
-        run: pnpm exec playwright test smoke.spec.ts
+      - name: E2E (functional + a11y)
+        run: pnpm exec playwright test smoke.spec.ts a11y.spec.ts
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

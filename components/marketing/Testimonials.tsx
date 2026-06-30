@@ -12,7 +12,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
       <div className="grid gap-px border border-line bg-line md:grid-cols-3">
         {items.slice(0, 3).map((t) => (
           <figure key={t.id} className="flex flex-col bg-bg p-7">
-            <div className="flex gap-0.5" aria-label={`Оценка ${t.rating} из 5`}>
+            <div className="flex gap-0.5" role="img" aria-label={`Оценка ${t.rating} из 5`}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
