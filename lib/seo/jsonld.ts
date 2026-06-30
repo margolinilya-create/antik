@@ -106,7 +106,6 @@ export function buildOrganizationJsonLd(rating?: {
     url: site.url,
     image: `${site.url}/opengraph-image`,
     description: site.tagline,
-    foundingDate: site.founded,
     telephone: site.phone,
     email: site.email,
     priceRange: "₽₽₽",

@@ -14,7 +14,6 @@ export const site = {
     return env.siteUrl;
   },
   tagline: "Антиквариат с провенансом и экспертизой",
-  founded: "1999",
   // Placeholder contact details — replace with the gallery's real data.
   phone: "+7 (495) 120-00-00",
   phoneHref: "tel:+74951200000",

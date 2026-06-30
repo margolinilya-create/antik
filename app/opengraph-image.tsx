@@ -30,7 +30,7 @@ export default function Image() {
             color: "#806645",
           }}
         >
-          {`Антикварная галерея · с ${site.founded}`}
+          Антикварная галерея
         </div>
         <div style={{ fontSize: 132, letterSpacing: 18, marginTop: 28 }}>
           {site.name}

@@ -52,7 +52,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55" />
         <div className="relative z-10 mx-auto max-w-2xl px-5 text-center text-[#f6f2ea]">
           <p className="text-[0.6rem] uppercase tracking-[0.34em] text-[#e7dcc6]">
-            Антикварная галерея · с 1999
+            Антикварная галерея
           </p>
           <h1 className="mt-5 font-display text-4xl font-medium leading-[1.08] tracking-wide sm:text-6xl">
             Предметы с историей

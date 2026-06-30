@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 };
 
 const stats = [
-  { value: "25+", label: "лет на рынке антиквариата" },
-  { value: "1 000+", label: "предметов нашли новых владельцев" },
   { value: "100%", label: "предметов с атрибуцией" },
+  { value: "1 / 1", label: "каждый предмет в единственном экземпляре" },
+  { value: "14 дней", label: "на возврат, если предмет не соответствует описанию" },
 ];
 
 export default function AboutPage() {
