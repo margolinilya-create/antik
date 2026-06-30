@@ -7,6 +7,7 @@ export interface TaxonomyTerm {
   name_ru: string;
   seo_title: string | null;
   seo_description: string | null;
+  intro_ru: string | null;
 }
 
 type TaxonomyTable = "categories" | "eras" | "makers";
@@ -19,7 +20,7 @@ export async function getTaxonomyTerm(
   const supabase = createStaticClient();
   const { data } = await supabase
     .from(table)
-    .select("slug, name_ru, seo_title, seo_description")
+    .select("slug, name_ru, seo_title, seo_description, intro_ru")
     .eq("slug", slug)
     .single();
   return (data as TaxonomyTerm | null) ?? null;

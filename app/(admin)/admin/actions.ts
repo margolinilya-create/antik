@@ -394,6 +394,7 @@ export async function updateTaxonomyTerm(
     sort_order?: number;
     seo_title?: string;
     seo_description?: string;
+    intro_ru?: string;
   },
 ): Promise<ActionState> {
   try {
@@ -412,6 +413,7 @@ export async function updateTaxonomyTerm(
   if (SEO_TAXONOMY.includes(table)) {
     patch.seo_title = values.seo_title?.trim() || null;
     patch.seo_description = values.seo_description?.trim() || null;
+    patch.intro_ru = values.intro_ru?.trim() || null;
   }
   const { error } = await supabase.from(table).update(patch).eq("id", id);
   if (error) return { error: "Не удалось сохранить (возможно, дубль slug)" };

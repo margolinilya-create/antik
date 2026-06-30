@@ -213,6 +213,7 @@ export interface TaxonomyFullRow {
   sort_order: number | null;
   seo_title: string | null;
   seo_description: string | null;
+  intro_ru: string | null;
 }
 
 export async function getTaxonomyFull(): Promise<
@@ -246,6 +247,7 @@ export async function getTaxonomyFull(): Promise<
       sort_order: (r.sort_order as number | null) ?? null,
       seo_title: (r.seo_title as string | null) ?? null,
       seo_description: (r.seo_description as string | null) ?? null,
+      intro_ru: (r.intro_ru as string | null) ?? null,
     }));
   });
   return out;

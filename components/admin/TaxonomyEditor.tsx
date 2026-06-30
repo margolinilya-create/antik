@@ -27,6 +27,7 @@ function TermRow({
   const [sort, setSort] = useState(String(row.sort_order ?? 0));
   const [seoTitle, setSeoTitle] = useState(row.seo_title ?? "");
   const [seoDesc, setSeoDesc] = useState(row.seo_description ?? "");
+  const [intro, setIntro] = useState(row.intro_ru ?? "");
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -38,7 +39,9 @@ function TermRow({
         name_ru: name,
         slug,
         sort_order: Number(sort) || 0,
-        ...(hasSeo ? { seo_title: seoTitle, seo_description: seoDesc } : {}),
+        ...(hasSeo
+          ? { seo_title: seoTitle, seo_description: seoDesc, intro_ru: intro }
+          : {}),
       });
       if (res.error) setErr(res.error);
       else {
@@ -116,6 +119,15 @@ function TermRow({
                   value={seoDesc}
                   rows={2}
                   onChange={(e) => setSeoDesc(e.target.value)}
+                  className={input}
+                />
+              </label>
+              <label className="space-y-0.5 sm:col-span-2">
+                <span className={lbl}>Вводный текст (на странице)</span>
+                <textarea
+                  value={intro}
+                  rows={3}
+                  onChange={(e) => setIntro(e.target.value)}
                   className={input}
                 />
               </label>
