@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { site } from "@/lib/site";
 import { CartLink } from "./CartLink";
 import { FavoritesLink } from "./FavoritesLink";
@@ -21,7 +21,7 @@ const NAV_RIGHT = [
 ];
 
 const linkCls =
-  "link-underline py-1 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-muted transition-colors hover:text-ink";
+  "link-underline whitespace-nowrap py-1 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-muted transition-colors hover:text-ink";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -72,26 +72,6 @@ export function SiteHeader() {
               </Link>
             ))}
           </nav>
-          <form action="/search" className="relative hidden lg:block">
-            <Search
-              className="pointer-events-none absolute left-0 top-1/2 size-4 -translate-y-1/2 text-faint"
-              aria-hidden
-            />
-            <input
-              name="q"
-              type="search"
-              placeholder="Поиск"
-              aria-label="Поиск по каталогу"
-              className="w-24 border-b border-line bg-transparent py-1.5 pl-6 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:w-40 focus:border-accent"
-            />
-          </form>
-          <Link
-            href="/search"
-            aria-label="Поиск"
-            className="text-muted transition-colors hover:text-ink lg:hidden"
-          >
-            <Search className="size-5" />
-          </Link>
           <FavoritesLink />
           <CartLink />
         </div>
@@ -111,13 +91,6 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
-            <Link
-              href="/search"
-              onClick={() => setOpen(false)}
-              className="py-3 text-sm uppercase tracking-[0.18em] text-muted transition-colors hover:text-ink"
-            >
-              Поиск
-            </Link>
           </nav>
         </div>
       )}
