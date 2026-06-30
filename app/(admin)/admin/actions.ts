@@ -284,6 +284,35 @@ export async function deleteItemImage(id: string): Promise<void> {
   revalidatePath("/admin/items");
 }
 
+/** Move an image one slot up/down by rewriting all sort_order values. */
+export async function moveItemImage(
+  itemId: string,
+  imageId: string,
+  dir: "up" | "down",
+): Promise<void> {
+  await ensureAdmin();
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("item_images")
+    .select("id, sort_order")
+    .eq("item_id", itemId)
+    .order("sort_order");
+  const order = ((data as { id: string }[]) ?? []).map((i) => i.id);
+  const idx = order.indexOf(imageId);
+  const swapIdx = dir === "up" ? idx - 1 : idx + 1;
+  if (idx < 0 || swapIdx < 0 || swapIdx >= order.length) return;
+  const [moved] = order.splice(idx, 1);
+  order.splice(swapIdx, 0, moved);
+  // Reindex sequentially so order is always well-defined (handles dup values).
+  await Promise.all(
+    order.map((id, i) =>
+      supabase.from("item_images").update({ sort_order: i }).eq("id", id),
+    ),
+  );
+  await revalidateItem(supabase, itemId);
+  revalidatePath("/admin/items");
+}
+
 export async function setPrimaryImage(
   itemId: string,
   imageId: string,

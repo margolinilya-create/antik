@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { requireAdmin, getAdminUser } from "@/lib/supabase/auth";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { signOut } from "./actions";
-
-const NAV = [
-  { href: "/admin", label: "Дашборд" },
-  { href: "/admin/items", label: "Предметы" },
-  { href: "/admin/inquiries", label: "Заявки" },
-  { href: "/admin/taxonomy", label: "Справочники" },
-];
 
 export default async function AdminLayout({
   children,
@@ -18,22 +12,23 @@ export default async function AdminLayout({
   const admin = await getAdminUser();
 
   return (
-    <div className="flex min-h-screen bg-stone-100">
+    <div className="flex min-h-screen flex-col bg-stone-100 md:flex-row">
+      {/* Mobile top bar */}
+      <header className="flex items-center gap-3 border-b border-stone-200 bg-white px-4 py-3 md:hidden">
+        <Link href="/admin" className="font-semibold">
+          RELIQUA
+        </Link>
+        <div className="ml-auto">
+          <AdminNav orientation="top" />
+        </div>
+      </header>
+
+      {/* Desktop sidebar */}
       <aside className="hidden w-56 shrink-0 flex-col border-r border-stone-200 bg-white p-4 md:flex">
         <Link href="/admin" className="text-lg font-semibold">
           RELIQUA · админ
         </Link>
-        <nav className="mt-6 flex flex-col gap-1 text-sm">
-          {NAV.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className="rounded-md px-3 py-2 text-stone-600 hover:bg-stone-100 hover:text-stone-900"
-            >
-              {n.label}
-            </Link>
-          ))}
-        </nav>
+        <AdminNav orientation="side" />
         <div className="mt-auto border-t border-stone-200 pt-4 text-xs text-stone-500">
           <p className="truncate">{admin?.email}</p>
           <p className="mb-2 text-stone-400">Роль: {admin?.role}</p>
@@ -49,7 +44,8 @@ export default async function AdminLayout({
           </div>
         </div>
       </aside>
-      <main className="flex-1 overflow-x-auto p-6">{children}</main>
+
+      <main className="flex-1 overflow-x-auto p-4 md:p-6">{children}</main>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   deleteItemImage,
   setPrimaryImage,
   updateItemImageAlt,
+  moveItemImage,
 } from "@/app/(admin)/admin/actions";
 
 /** Per-image alt-text field. Saves on blur when changed. */
@@ -111,7 +112,7 @@ export function ImageUploader({
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
-        {images.map((img) => (
+        {images.map((img, i) => (
           <div key={img.id} className="space-y-1">
             <div className="relative aspect-square overflow-hidden rounded-md border border-stone-200 bg-stone-100">
               <Image
@@ -126,6 +127,32 @@ export function ImageUploader({
                   Обложка
                 </span>
               )}
+              <div className="absolute right-1 top-1 flex gap-1">
+                <button
+                  type="button"
+                  disabled={i === 0}
+                  onClick={async () => {
+                    await moveItemImage(itemId, img.id, "up");
+                    router.refresh();
+                  }}
+                  title="Левее"
+                  className="rounded bg-white/85 px-1 text-[11px] leading-5 text-stone-700 hover:bg-white disabled:opacity-30"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  disabled={i === images.length - 1}
+                  onClick={async () => {
+                    await moveItemImage(itemId, img.id, "down");
+                    router.refresh();
+                  }}
+                  title="Правее"
+                  className="rounded bg-white/85 px-1 text-[11px] leading-5 text-stone-700 hover:bg-white disabled:opacity-30"
+                >
+                  →
+                </button>
+              </div>
             </div>
             <div className="flex justify-between text-xs">
               {!img.is_primary && (

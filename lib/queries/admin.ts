@@ -11,6 +11,7 @@ export interface AdminItemRow {
   price: number | null;
   currency: string;
   updated_at: string;
+  image: string | null;
 }
 
 export interface TaxonomyOption {
@@ -57,16 +58,42 @@ export interface AdminItemEdit {
   }[];
 }
 
-export async function listAdminItems(status?: string): Promise<AdminItemRow[]> {
+export async function listAdminItems(
+  status?: string,
+  q?: string,
+): Promise<AdminItemRow[]> {
   if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   let query = supabase
     .from("items")
-    .select("id, slug, title_ru, status, price, currency, updated_at")
+    .select(
+      "id, slug, title_ru, status, price, currency, updated_at, images:item_images(storage_path, is_primary, sort_order)",
+    )
     .order("updated_at", { ascending: false });
   if (status) query = query.eq("status", status);
+  if (q && q.trim()) query = query.ilike("title_ru", `%${q.trim()}%`);
   const { data } = await query;
-  return (data as AdminItemRow[]) ?? [];
+  return ((data as Record<string, unknown>[]) ?? []).map((r) => {
+    const imgs =
+      (r.images as { storage_path: string; is_primary: boolean; sort_order: number }[]) ??
+      [];
+    const cover =
+      [...imgs].sort(
+        (a, b) =>
+          Number(b.is_primary) - Number(a.is_primary) ||
+          (a.sort_order ?? 0) - (b.sort_order ?? 0),
+      )[0] ?? null;
+    return {
+      id: r.id as string,
+      slug: r.slug as string,
+      title_ru: r.title_ru as string,
+      status: r.status as ItemStatus,
+      price: (r.price as number | null) ?? null,
+      currency: r.currency as string,
+      updated_at: r.updated_at as string,
+      image: cover?.storage_path ?? null,
+    };
+  });
 }
 
 export async function getItemForEdit(id: string): Promise<AdminItemEdit | null> {

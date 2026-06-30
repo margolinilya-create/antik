@@ -24,9 +24,14 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Card label="Всего предметов" value={total} />
+        <Card label="Всего предметов" value={total} href="/admin/items" />
         {STATUSES.map((s) => (
-          <Card key={s} label={statusLabel[s]} value={byStatus[s] ?? 0} />
+          <Card
+            key={s}
+            label={statusLabel[s]}
+            value={byStatus[s] ?? 0}
+            href={`/admin/items?status=${s}`}
+          />
         ))}
       </div>
 
@@ -41,11 +46,22 @@ export default async function AdminDashboard() {
   );
 }
 
-function Card({ label, value }: { label: string; value: number }) {
+function Card({
+  label,
+  value,
+  href,
+}: {
+  label: string;
+  value: number;
+  href: string;
+}) {
   return (
-    <div className="rounded-lg border border-stone-200 bg-white p-4">
+    <Link
+      href={href}
+      className="rounded-lg border border-stone-200 bg-white p-4 transition-colors hover:border-stone-400"
+    >
       <p className="text-xs text-stone-500">{label}</p>
       <p className="mt-1 text-2xl font-semibold">{value}</p>
-    </div>
+    </Link>
   );
 }
