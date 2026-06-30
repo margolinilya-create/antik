@@ -49,7 +49,7 @@ export async function generateMetadata({
     "Антикварный предмет в наличии.";
 
   return {
-    title,
+    title: item.seo_title ? { absolute: item.seo_title } : title,
     description,
     alternates: { canonical: `/item/${item.slug}` },
     openGraph: {

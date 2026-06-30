@@ -25,7 +25,9 @@ export async function generateMetadata({
   const maker = await getMakerBySlug(slug);
   if (!maker) return { title: "Бренд не найден" };
   return {
-    title: maker.seo_title ?? `${maker.name_ru} — антиквариат`,
+    title: maker.seo_title
+      ? { absolute: maker.seo_title }
+      : `${maker.name_ru} — антиквариат`,
     description:
       maker.seo_description ??
       maker.tagline_ru ??

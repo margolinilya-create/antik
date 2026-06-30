@@ -24,7 +24,9 @@ export async function generateMetadata({
   const term = await getTaxonomyTerm("categories", slug);
   if (!term) return { title: "Категория не найдена" };
   return {
-    title: term.seo_title ?? `${term.name_ru} — купить антиквариат`,
+    title: term.seo_title
+      ? { absolute: term.seo_title }
+      : `${term.name_ru} — купить антиквариат`,
     description:
       term.seo_description ??
       `Антикварные предметы категории «${term.name_ru}» в наличии. Подбор и продажа с провенансом.`,

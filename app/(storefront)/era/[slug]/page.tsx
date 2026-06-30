@@ -24,7 +24,9 @@ export async function generateMetadata({
   const term = await getTaxonomyTerm("eras", slug);
   if (!term) return { title: "Эпоха не найдена" };
   return {
-    title: term.seo_title ?? `Антиквариат эпохи «${term.name_ru}»`,
+    title: term.seo_title
+      ? { absolute: term.seo_title }
+      : `Антиквариат эпохи «${term.name_ru}»`,
     description:
       term.seo_description ??
       `Антикварные предметы эпохи «${term.name_ru}» в наличии. Подбор и продажа с экспертизой.`,
