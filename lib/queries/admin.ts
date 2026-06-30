@@ -126,6 +126,12 @@ export async function getTaxonomyOptions(): Promise<{
   };
 }
 
+export interface InquirySnapshotItem {
+  slug: string;
+  title: string;
+  price: number | null;
+}
+
 export interface AdminInquiry {
   id: string;
   item_id: string | null;
@@ -136,6 +142,12 @@ export interface AdminInquiry {
   email: string | null;
   telegram: string | null;
   message_ru: string | null;
+  offer_amount: number | null;
+  admin_note: string | null;
+  total_estimate: number | null;
+  items_snapshot: InquirySnapshotItem[] | null;
+  source: string | null;
+  item: { title_ru: string; slug: string } | null;
   created_at: string;
 }
 
@@ -145,10 +157,71 @@ export async function listInquiries(): Promise<AdminInquiry[]> {
   const { data } = await supabase
     .from("inquiries")
     .select(
-      "id, item_id, type, status, customer_name, phone, email, telegram, message_ru, created_at",
+      `id, item_id, type, status, customer_name, phone, email, telegram,
+       message_ru, offer_amount, admin_note, total_estimate, items_snapshot,
+       source, created_at, item:items(title_ru, slug)`,
     )
     .order("created_at", { ascending: false });
-  return (data as AdminInquiry[]) ?? [];
+  // Supabase returns the FK join as an object (or null) for a to-one relation.
+  return ((data as Record<string, unknown>[]) ?? []).map((r) => ({
+    ...(r as object),
+    item: Array.isArray(r.item) ? (r.item[0] ?? null) : (r.item ?? null),
+  })) as AdminInquiry[];
+}
+
+export type TaxonomyTable =
+  | "categories"
+  | "eras"
+  | "makers"
+  | "materials"
+  | "techniques";
+
+/** Tables that carry SEO landing-page fields. */
+export const SEO_TAXONOMY: TaxonomyTable[] = ["categories", "eras", "makers"];
+
+export interface TaxonomyFullRow {
+  id: string;
+  slug: string;
+  name_ru: string;
+  sort_order: number | null;
+  seo_title: string | null;
+  seo_description: string | null;
+}
+
+export async function getTaxonomyFull(): Promise<
+  Record<TaxonomyTable, TaxonomyFullRow[]>
+> {
+  const empty: Record<TaxonomyTable, TaxonomyFullRow[]> = {
+    categories: [],
+    eras: [],
+    makers: [],
+    materials: [],
+    techniques: [],
+  };
+  if (!isSupabaseConfigured) return empty;
+  const supabase = await createClient();
+  const tables: TaxonomyTable[] = [
+    "categories",
+    "eras",
+    "makers",
+    "materials",
+    "techniques",
+  ];
+  const results = await Promise.all(
+    tables.map((t) => supabase.from(t).select("*").order("sort_order")),
+  );
+  const out = { ...empty };
+  tables.forEach((t, i) => {
+    out[t] = ((results[i].data as Record<string, unknown>[]) ?? []).map((r) => ({
+      id: r.id as string,
+      slug: r.slug as string,
+      name_ru: r.name_ru as string,
+      sort_order: (r.sort_order as number | null) ?? null,
+      seo_title: (r.seo_title as string | null) ?? null,
+      seo_description: (r.seo_description as string | null) ?? null,
+    }));
+  });
+  return out;
 }
 
 export async function getDashboardCounts(): Promise<{

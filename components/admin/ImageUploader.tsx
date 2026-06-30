@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -9,7 +9,38 @@ import {
   addItemImage,
   deleteItemImage,
   setPrimaryImage,
+  updateItemImageAlt,
 } from "@/app/(admin)/admin/actions";
+
+/** Per-image alt-text field. Saves on blur when changed. */
+function AltField({ id, alt }: { id: string; alt: string | null }) {
+  const [value, setValue] = useState(alt ?? "");
+  const [saved, setSaved] = useState(false);
+  const [pending, start] = useTransition();
+  return (
+    <input
+      value={value}
+      disabled={pending}
+      onChange={(e) => {
+        setValue(e.target.value);
+        setSaved(false);
+      }}
+      onBlur={() => {
+        if (value.trim() !== (alt ?? "").trim()) {
+          start(async () => {
+            await updateItemImageAlt(id, value);
+            setSaved(true);
+          });
+        }
+      }}
+      placeholder="alt-текст"
+      title="Описание изображения (alt) — для SEO и доступности"
+      className={`w-full rounded border px-1.5 py-0.5 text-[11px] outline-none focus:border-stone-500 ${
+        saved ? "border-green-400" : "border-stone-200"
+      }`}
+    />
+  );
+}
 
 interface ExistingImage {
   id: string;
@@ -120,6 +151,7 @@ export function ImageUploader({
                 Удалить
               </button>
             </div>
+            <AltField id={img.id} alt={img.alt_ru} />
           </div>
         ))}
       </div>

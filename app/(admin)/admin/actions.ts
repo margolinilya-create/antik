@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAdminUser } from "@/lib/supabase/auth";
 import { itemSchema } from "@/lib/validation/item";
 import { slugify } from "@/lib/utils";
+import { SEO_TAXONOMY, type TaxonomyTable } from "@/lib/queries/admin";
 import type { ItemStatus } from "@/types/database";
 
 export interface ActionState {
@@ -306,6 +307,107 @@ export async function updateInquiryStatus(
   const supabase = await createClient();
   await supabase.from("inquiries").update({ status }).eq("id", id);
   revalidatePath("/admin/inquiries");
+}
+
+/** Save the owner's internal note on a lead. */
+export async function updateInquiryNote(
+  id: string,
+  note: string,
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("inquiries")
+    .update({ admin_note: note.trim() || null })
+    .eq("id", id);
+  if (error) return { error: "Не удалось сохранить заметку" };
+  revalidatePath("/admin/inquiries");
+  return { ok: true };
+}
+
+/** Update an image's alt text (accessibility + SEO). */
+export async function updateItemImageAlt(
+  id: string,
+  alt_ru: string,
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("item_images")
+    .select("item_id")
+    .eq("id", id)
+    .single();
+  const row = data as { item_id: string } | null;
+  const { error } = await supabase
+    .from("item_images")
+    .update({ alt_ru: alt_ru.trim() || null })
+    .eq("id", id);
+  if (error) return { error: "Не удалось сохранить alt-текст" };
+  if (row) await revalidateItem(supabase, row.item_id);
+  revalidatePath("/admin/items");
+  return { ok: true };
+}
+
+export async function updateTaxonomyTerm(
+  table: TaxonomyTable,
+  id: string,
+  values: {
+    name_ru: string;
+    slug?: string;
+    sort_order?: number;
+    seo_title?: string;
+    seo_description?: string;
+  },
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+  const name = values.name_ru.trim();
+  if (name.length < 2) return { error: "Укажите название" };
+  const supabase = await createClient();
+  const patch: Record<string, unknown> = {
+    name_ru: name,
+    slug: values.slug?.trim() || slugify(name),
+    sort_order: Number.isFinite(values.sort_order) ? values.sort_order : 0,
+  };
+  if (SEO_TAXONOMY.includes(table)) {
+    patch.seo_title = values.seo_title?.trim() || null;
+    patch.seo_description = values.seo_description?.trim() || null;
+  }
+  const { error } = await supabase.from(table).update(patch).eq("id", id);
+  if (error) return { error: "Не удалось сохранить (возможно, дубль slug)" };
+  revalidatePath("/admin/taxonomy");
+  revalidatePath("/catalog");
+  revalidatePath("/sitemap.xml");
+  return { ok: true };
+}
+
+export async function deleteTaxonomyTerm(
+  table: TaxonomyTable,
+  id: string,
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.from(table).delete().eq("id", id);
+  if (error) {
+    return { error: "Нельзя удалить: справочник используется предметами." };
+  }
+  revalidatePath("/admin/taxonomy");
+  return { ok: true };
 }
 
 export async function createTaxonomyTerm(
