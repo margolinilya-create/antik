@@ -22,6 +22,7 @@ export interface JournalPost {
   seo_description: string | null;
   published_at: string | null;
   updated_at: string | null;
+  is_featured: boolean;
 }
 
 export async function listTestimonials(limit = 6): Promise<Testimonial[]> {
@@ -61,11 +62,30 @@ export async function listJournalPosts(limit = 12): Promise<JournalPost[]> {
   const supabase = createStaticClient();
   const { data } = await supabase
     .from("journal_posts")
-    .select("id, slug, title_ru, excerpt_ru, cover_path, published_at")
+    .select("id, slug, title_ru, excerpt_ru, cover_path, published_at, is_featured")
     .not("published_at", "is", null)
     .order("published_at", { ascending: false })
     .limit(limit);
   return (data as JournalPost[]) ?? [];
+}
+
+/**
+ * Editorial "Топ журнала" — curated featured posts, newest first.
+ * Falls back to the latest posts when nothing is flagged featured yet.
+ */
+export async function listFeaturedJournalPosts(limit = 3): Promise<JournalPost[]> {
+  if (!isSupabaseConfigured) return [];
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("journal_posts")
+    .select("id, slug, title_ru, excerpt_ru, cover_path, published_at, is_featured")
+    .not("published_at", "is", null)
+    .eq("is_featured", true)
+    .order("published_at", { ascending: false })
+    .limit(limit);
+  const featured = (data as JournalPost[]) ?? [];
+  if (featured.length > 0) return featured;
+  return listJournalPosts(limit);
 }
 
 export async function getJournalPost(slug: string): Promise<JournalPost | null> {

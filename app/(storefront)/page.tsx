@@ -3,8 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Sparkles, Landmark, KeyRound } from "lucide-react";
 import { searchItems } from "@/lib/queries/items";
-import { listTestimonials, listJournalPosts } from "@/lib/queries/content";
+import { listTestimonials, listFeaturedJournalPosts } from "@/lib/queries/content";
 import { ItemCard } from "@/components/catalog/ItemCard";
+import { JournalCard } from "@/components/journal/JournalCard";
 import { GuaranteesStrip } from "@/components/marketing/GuaranteesStrip";
 import { Testimonials } from "@/components/marketing/Testimonials";
 import { Newsletter } from "@/components/marketing/Newsletter";
@@ -34,7 +35,7 @@ export default async function HomePage() {
   const [{ items }, testimonials, posts] = await Promise.all([
     searchItems({ limit: 8, sort: "newest" }),
     listTestimonials(3),
-    listJournalPosts(3),
+    listFeaturedJournalPosts(3),
   ]);
 
   return (
@@ -155,12 +156,12 @@ export default async function HomePage() {
       {/* Social proof */}
       <Testimonials items={testimonials} />
 
-      {/* Journal teaser */}
+      {/* Топ журнала */}
       {posts.length > 0 && (
         <section>
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <p className="eyebrow text-accent">Журнал</p>
+              <p className="eyebrow text-accent">Топ журнала</p>
               <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl">
                 Гиды коллекционеру
               </h2>
@@ -174,20 +175,7 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-px border border-line bg-line md:grid-cols-3">
             {posts.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/journal/${p.slug}`}
-                className="group bg-bg p-7 transition-colors hover:bg-surface"
-              >
-                <h3 className="text-lg font-light leading-snug tracking-tight text-ink transition-colors group-hover:text-accent">
-                  {p.title_ru}
-                </h3>
-                {p.excerpt_ru && (
-                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">
-                    {p.excerpt_ru}
-                  </p>
-                )}
-              </Link>
+              <JournalCard key={p.slug} post={p} />
             ))}
           </div>
         </section>

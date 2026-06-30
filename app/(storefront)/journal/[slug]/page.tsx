@@ -5,6 +5,9 @@ import { getJournalPost, getJournalSlugs } from "@/lib/queries/content";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildArticleJsonLd } from "@/lib/seo/jsonld";
+import { JournalCover } from "@/components/journal/JournalCover";
+import { JournalAvatar } from "@/components/journal/JournalAvatar";
+import { journalTheme, readingMinutes } from "@/lib/journal-art";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -46,6 +49,8 @@ export default async function JournalPostPage({
   if (!post) notFound();
 
   const paragraphs = (post.body_ru ?? "").split(/\n\n+/).filter(Boolean);
+  const theme = journalTheme(post);
+  const minutes = readingMinutes(post.body_ru);
 
   return (
     <article className="mx-auto max-w-3xl space-y-8">
@@ -59,15 +64,7 @@ export default async function JournalPostPage({
       />
 
       <header>
-        {post.published_at && (
-          <time className="eyebrow">
-            {new Date(post.published_at).toLocaleDateString("ru-RU", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </time>
-        )}
+        <p className="eyebrow text-accent">{theme.label}</p>
         <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           {post.title_ru}
         </h1>
@@ -76,8 +73,33 @@ export default async function JournalPostPage({
             {post.excerpt_ru}
           </p>
         )}
-        <div className="gold-rule mt-8 w-16" />
+
+        {/* Byline: article avatar, source, date, reading time */}
+        <div className="mt-7 flex items-center gap-3 border-y border-line py-4">
+          <JournalAvatar post={post} size={44} />
+          <div className="text-sm">
+            <p className="font-medium text-ink">Редакция RELIQUA</p>
+            <p className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+              {post.published_at &&
+                new Date(post.published_at).toLocaleDateString("ru-RU", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              {post.published_at ? " · " : ""}
+              {minutes} мин чтения
+            </p>
+          </div>
+        </div>
       </header>
+
+      <JournalCover
+        post={post}
+        priority
+        sizes="(min-width: 768px) 768px, 100vw"
+        showLabel={false}
+        className="aspect-[16/9] w-full"
+      />
 
       <div className="space-y-5 text-[1.02rem] leading-[1.85] text-ink/85">
         {paragraphs.map((p, i) => (
