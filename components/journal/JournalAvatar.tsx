@@ -1,35 +1,31 @@
-import { journalTheme, journalInitial } from "@/lib/journal-art";
+import Image from "next/image";
+import { imageUrl } from "@/lib/supabase/storage";
+import { coverFor } from "@/lib/journal-covers";
 
 /**
- * Small round monogram emblem for an article — themed by topic.
- * Used in lists and the article byline as the article's "avatar".
+ * Small round thumbnail for an article — a circular crop of its cover photo.
+ * Renders nothing when no image is available (never a letter monogram).
  */
 export function JournalAvatar({
   post,
   size = 40,
   className = "",
 }: {
-  post: { slug: string; title_ru: string };
+  post: { slug: string; title_ru: string; cover_path?: string | null };
   size?: number;
   className?: string;
 }) {
-  const theme = journalTheme(post);
-  const initial = journalInitial(post);
+  const src = post.cover_path
+    ? imageUrl(post.cover_path, { width: 120 })
+    : coverFor(post.slug)?.src ?? null;
+  if (!src) return null;
+
   return (
     <span
-      aria-hidden
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-display ${className}`}
-      style={{
-        width: size,
-        height: size,
-        backgroundColor: theme.ground,
-        color: theme.ink,
-        border: `1px solid ${theme.ink}55`,
-        fontSize: size * 0.42,
-        lineHeight: 1,
-      }}
+      className={`relative inline-block shrink-0 overflow-hidden rounded-full border border-line ${className}`}
+      style={{ width: size, height: size }}
     >
-      {initial}
+      <Image src={src} alt="" fill sizes={`${size}px`} className="object-cover" />
     </span>
   );
 }

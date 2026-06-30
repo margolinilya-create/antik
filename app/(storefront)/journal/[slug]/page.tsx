@@ -8,6 +8,7 @@ import { buildArticleJsonLd } from "@/lib/seo/jsonld";
 import { JournalCover } from "@/components/journal/JournalCover";
 import { JournalAvatar } from "@/components/journal/JournalAvatar";
 import { journalTheme, readingMinutes } from "@/lib/journal-art";
+import { coverFor } from "@/lib/journal-covers";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -51,6 +52,8 @@ export default async function JournalPostPage({
   const paragraphs = (post.body_ru ?? "").split(/\n\n+/).filter(Boolean);
   const theme = journalTheme(post);
   const minutes = readingMinutes(post.body_ru);
+  // Image credit shown only for the curated covers (not user-uploaded photos).
+  const credit = post.cover_path ? null : coverFor(slug);
 
   return (
     <article className="mx-auto max-w-3xl space-y-8">
@@ -93,13 +96,40 @@ export default async function JournalPostPage({
         </div>
       </header>
 
-      <JournalCover
-        post={post}
-        priority
-        sizes="(min-width: 768px) 768px, 100vw"
-        showLabel={false}
-        className="aspect-[16/9] w-full"
-      />
+      <figure className="space-y-2">
+        <JournalCover
+          post={post}
+          priority
+          sizes="(min-width: 768px) 768px, 100vw"
+          className="aspect-[16/9] w-full"
+        />
+        {credit && (
+          <figcaption className="text-[0.7rem] leading-relaxed text-faint">
+            Иллюстрация: {credit.author} ·{" "}
+            {credit.licenseUrl ? (
+              <a
+                href={credit.licenseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-underline pb-0.5 hover:text-muted"
+              >
+                {credit.license}
+              </a>
+            ) : (
+              credit.license
+            )}{" "}
+            ·{" "}
+            <a
+              href={credit.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline pb-0.5 hover:text-muted"
+            >
+              Wikimedia Commons
+            </a>
+          </figcaption>
+        )}
+      </figure>
 
       <div className="space-y-5 text-[1.02rem] leading-[1.85] text-ink/85">
         {paragraphs.map((p, i) => (

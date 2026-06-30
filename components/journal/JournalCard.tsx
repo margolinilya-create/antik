@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { JournalCover } from "./JournalCover";
-import { JournalAvatar } from "./JournalAvatar";
 import { journalTheme } from "@/lib/journal-art";
 import type { JournalPost } from "@/lib/queries/content";
 
@@ -35,7 +34,6 @@ export function JournalCard({
       />
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center gap-2.5">
-          <JournalAvatar post={post} size={28} />
           <span className="text-[0.62rem] uppercase tracking-[0.18em] text-accent">
             {theme.label}
           </span>

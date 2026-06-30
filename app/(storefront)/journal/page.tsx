@@ -100,7 +100,6 @@ export default async function JournalPage() {
                   <JournalCover
                     post={p}
                     sizes="160px"
-                    showLabel={false}
                     className="aspect-square w-24 shrink-0 sm:w-28"
                   />
                   <div className="flex flex-col">

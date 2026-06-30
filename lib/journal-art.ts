@@ -41,11 +41,6 @@ export function journalTheme(post: { slug: string }): JournalTheme {
   return THEMES.ekspertiza;
 }
 
-/** First letter of the title — the serif drop-cap on covers / avatars. */
-export function journalInitial(post: { title_ru: string }): string {
-  return (post.title_ru.trim()[0] ?? "R").toUpperCase();
-}
-
 /** Rough reading time in minutes from the body length (~1000 chars/min ru). */
 export function readingMinutes(body: string | null | undefined): number {
   if (!body) return 1;
