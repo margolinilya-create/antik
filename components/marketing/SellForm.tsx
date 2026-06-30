@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { sellRequest, type LeadState } from "@/app/(storefront)/leads";
+import { ConsentCheckbox } from "./ConsentCheckbox";
 
 const input =
   "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent";
@@ -56,6 +57,7 @@ export function SellForm() {
           {state.error}
         </p>
       )}
+      <ConsentCheckbox id="sell-consent" />
       <button
         type="submit"
         disabled={pending}

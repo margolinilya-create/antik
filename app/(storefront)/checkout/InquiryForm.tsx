@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { submitInquiry, type InquiryState } from "./actions";
+import { ConsentCheckbox } from "@/components/marketing/ConsentCheckbox";
 
 const initial: InquiryState = {};
 
@@ -53,6 +54,7 @@ export function InquiryForm({ itemSlug }: { itemSlug?: string }) {
 
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}
 
+      <ConsentCheckbox id="inq-consent" />
       <button
         type="submit"
         disabled={pending}

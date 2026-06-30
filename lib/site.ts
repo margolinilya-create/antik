@@ -31,6 +31,17 @@ export const site = {
     country: "RU",
   },
   hours: "Ежедневно, 11:00–20:00",
+  /**
+   * Legal requisites for 152-ФЗ / public offer. PLACEHOLDERS — replace with the
+   * gallery's real registration data before going live (verify with a lawyer).
+   */
+  legal: {
+    entity: "ИП Фамилия Имя Отчество",
+    inn: "000000000000",
+    ogrn: "000000000000000",
+    legalAddress: "121248, г. Москва, Кутузовский проспект, 12",
+    dataController: "Антикварная галерея RELIQUA",
+  },
 } as const;
 
 export const guarantees = [

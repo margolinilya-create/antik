@@ -41,7 +41,7 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg">
       <div className="mx-auto grid max-w-[1320px] grid-cols-[auto_1fr_auto] items-center gap-4 px-5 py-4 md:grid-cols-3 md:py-5">
         {/* Left: mobile burger / desktop category nav */}
         <div className="flex items-center md:justify-start">

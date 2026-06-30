@@ -32,6 +32,13 @@ function notConfigured(): LeadState {
   return { error: "Сервер не настроен. Подключите Supabase." };
 }
 
+/** 152-ФЗ: a lead is only accepted with explicit personal-data consent. */
+function hasConsent(formData: FormData): boolean {
+  const v = formData.get("consent");
+  return v === "1" || v === "on" || v === "true";
+}
+const CONSENT_ERROR = "Подтвердите согласие на обработку персональных данных";
+
 /**
  * Parse a Russian-formatted money string into a number.
  * Handles spaces / NBSP / ₽ as noise, "1 000,50" (comma decimal),
@@ -67,6 +74,7 @@ export async function subscribeNewsletter(
   if (!z.string().email().max(254).safeParse(email).success) {
     return { error: "Введите корректный email" };
   }
+  if (!hasConsent(formData)) return { error: CONSENT_ERROR };
   if (!isSupabaseConfigured) return notConfigured();
   const supabase = await createClient();
   const { error } = await supabase
@@ -94,6 +102,7 @@ export async function makeOffer(
     message_ru: formData.get("message_ru") || undefined,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
+  if (!hasConsent(formData)) return { error: CONSENT_ERROR };
 
   const amount = parseRubAmount(String(formData.get("offer_amount") ?? ""));
   if (!Number.isFinite(amount) || amount <= 0) {
@@ -143,6 +152,7 @@ export async function sellRequest(
     message_ru: formData.get("message_ru") || undefined,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
+  if (!hasConsent(formData)) return { error: CONSENT_ERROR };
   if (!isSupabaseConfigured) return notConfigured();
 
   const supabase = await createClient();

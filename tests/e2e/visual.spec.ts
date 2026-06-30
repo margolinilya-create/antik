@@ -1,5 +1,16 @@
 import { test, expect, type Page } from "@playwright/test";
 
+// Pre-dismiss the cookie banner so it doesn't overlay the footer in snapshots.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("antik-cookie-consent", "1");
+    } catch {
+      /* ignore */
+    }
+  });
+});
+
 // Mask external (Supabase) images so snapshots are stable across image
 // content/load timing — visual regression focuses on layout, typography, theme.
 async function snapshot(page: Page, name: string) {

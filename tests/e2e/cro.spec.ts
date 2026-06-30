@@ -52,9 +52,18 @@ test("favorites: add from item card heart, see on /favorites", async ({ page }) 
 });
 
 test("newsletter signup accepts an email", async ({ page }) => {
+  // Dismiss the cookie banner so it doesn't overlay the footer form.
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("antik-cookie-consent", "1");
+    } catch {
+      /* ignore */
+    }
+  });
   await page.goto("/");
   const form = page.locator('form:has(input[name="email"])').last();
   await form.locator('input[name="email"]').fill("e2e-test@example.com");
+  await form.locator('input[name="consent"]').check(); // 152-ФЗ consent required
   await form.getByRole("button", { name: /Подписаться/ }).click();
   await expect(page.getByText("Вы подписаны")).toBeVisible();
 });

@@ -7,6 +7,7 @@ import { useCart } from "@/lib/cart/store";
 import { useMounted } from "@/lib/hooks/useMounted";
 import { formatPrice } from "@/lib/format";
 import { submitCartInquiry, type CartInquiryState } from "./actions";
+import { ConsentCheckbox } from "@/components/marketing/ConsentCheckbox";
 
 export function CartView() {
   const items = useCart((s) => s.items);
@@ -97,6 +98,7 @@ export function CartView() {
         <input name="email" type="email" placeholder="Email" className={input} />
         <textarea name="message_ru" rows={2} placeholder="Сообщение" className={input} />
         {state.error && <p className="text-sm text-red-600">{state.error}</p>}
+        <ConsentCheckbox id="cart-consent" />
         <button
           type="submit"
           disabled={pending}

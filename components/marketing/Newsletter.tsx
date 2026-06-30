@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { subscribeNewsletter, type LeadState } from "@/app/(storefront)/leads";
+import { ConsentCheckbox } from "./ConsentCheckbox";
 
 export function Newsletter({
   source = "footer",
@@ -46,6 +47,7 @@ export function Newsletter({
           {pending ? "…" : "Подписаться"}
         </button>
       </div>
+      <ConsentCheckbox id={`consent-news-${source}`} />
       {state.error && (
         <p role="alert" className="text-sm text-red-600">
           {state.error}

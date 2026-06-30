@@ -29,6 +29,8 @@
 
 html {
   color-scheme: light;
+  /* Fill the iOS safe-area / overscroll region with cream (not the dark hero). */
+  background: var(--color-bg);
 }
 
 body {

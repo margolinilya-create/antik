@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { CookieBanner } from "@/components/marketing/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildOrganizationJsonLd } from "@/lib/seo/jsonld";
 
@@ -16,6 +17,7 @@ export default function StorefrontLayout({
         {children}
       </main>
       <SiteFooter />
+      <CookieBanner />
     </>
   );
 }

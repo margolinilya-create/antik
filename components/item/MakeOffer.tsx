@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { makeOffer, type LeadState } from "@/app/(storefront)/leads";
+import { ConsentCheckbox } from "@/components/marketing/ConsentCheckbox";
 
 const input =
   "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent";
@@ -45,6 +46,7 @@ export function MakeOffer({ slug }: { slug: string }) {
           {state.error}
         </p>
       )}
+      <ConsentCheckbox id="offer-consent" />
       <div className="flex gap-2">
         <button
           type="submit"

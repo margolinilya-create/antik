@@ -48,6 +48,11 @@ export async function submitCartInquiry(
     return { error: parsed.error.issues[0]?.message ?? "Проверьте поля формы" };
   }
 
+  // 152-ФЗ personal-data consent is required.
+  if (formData.get("consent") !== "1") {
+    return { error: "Подтвердите согласие на обработку персональных данных" };
+  }
+
   const slugs = parseSlugs(formData.get("snapshot"));
   if (slugs.length === 0) return { error: "Подборка пуста" };
 

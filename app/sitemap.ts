@@ -26,6 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/guarantees`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/sell`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/politika-konfidencialnosti`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/oferta`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const journalPages: MetadataRoute.Sitemap = journal.map((slug) => ({

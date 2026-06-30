@@ -29,6 +29,11 @@ export async function submitInquiry(
     return { error: parsed.error.issues[0]?.message ?? "Проверьте поля формы" };
   }
 
+  // 152-ФЗ personal-data consent is required.
+  if (formData.get("consent") !== "1") {
+    return { error: "Подтвердите согласие на обработку персональных данных" };
+  }
+
   if (!isSupabaseConfigured) {
     return { error: "Сервер не настроен. Подключите Supabase, чтобы принимать заявки." };
   }

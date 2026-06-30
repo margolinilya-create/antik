@@ -73,8 +73,19 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-line">
-        <div className="mx-auto max-w-[1280px] px-5 py-6 text-[0.72rem] uppercase tracking-[0.14em] text-faint">
-          © {new Date().getFullYear()} {site.legalName} · Все предметы уникальны
+        <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 py-6 text-[0.72rem] uppercase tracking-[0.14em] text-faint sm:flex-row sm:items-center sm:justify-between">
+          <span>© {new Date().getFullYear()} {site.legalName} · Все предметы уникальны</span>
+          <span className="flex flex-wrap gap-x-5 gap-y-1.5">
+            <Link href="/politika-konfidencialnosti" className="transition-colors hover:text-ink">
+              Политика конфиденциальности
+            </Link>
+            <Link href="/oferta" className="transition-colors hover:text-ink">
+              Оферта
+            </Link>
+          </span>
+        </div>
+        <div className="mx-auto max-w-[1280px] px-5 pb-6 text-[0.68rem] normal-case tracking-normal text-faint">
+          {site.legal.entity} · ИНН {site.legal.inn} · ОГРН {site.legal.ogrn}
         </div>
       </div>
     </footer>
