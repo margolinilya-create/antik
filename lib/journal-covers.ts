@@ -62,8 +62,8 @@ const COVERS: Record<string, JournalCoverMeta> = {
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:Russian_-_%22Kovsh%22_with_Imperial_Eagle_-_Walters_571076_-_View_A.jpg',
   },
-  "staraya-gzhel": {
-    src: "/journal/staraya-gzhel.jpg",
+  "staraya-gzhel-kak-otlichit": {
+    src: "/journal/staraya-gzhel-kak-otlichit.jpg",
     author: "Валентин Розанов",
     license: "CC BY-SA 3.0",
     licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0",
