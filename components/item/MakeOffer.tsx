@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import { makeOffer, type LeadState } from "@/app/(storefront)/leads";
 
 const input =
-  "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent";
+  "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent";
 
 export function MakeOffer({ slug }: { slug: string }) {
   const [open, setOpen] = useState(false);
@@ -34,11 +34,11 @@ export function MakeOffer({ slug }: { slug: string }) {
     <form action={action} className="space-y-2.5 border border-line p-4">
       <input type="hidden" name="item_slug" value={slug} />
       <p className="eyebrow mb-1">Ваше предложение</p>
-      <input name="offer_amount" inputMode="numeric" required placeholder="Сумма, ₽" className={input} />
-      <input name="customer_name" required placeholder="Имя" className={input} />
+      <input name="offer_amount" inputMode="numeric" required placeholder="Сумма, ₽" aria-label="Сумма предложения в рублях" className={input} />
+      <input name="customer_name" required placeholder="Имя" aria-label="Имя" className={input} />
       <div className="grid gap-2.5 sm:grid-cols-2">
-        <input name="phone" type="tel" placeholder="Телефон" className={input} />
-        <input name="telegram" placeholder="Telegram" className={input} />
+        <input name="phone" type="tel" placeholder="Телефон" aria-label="Телефон" className={input} />
+        <input name="telegram" placeholder="Telegram" aria-label="Telegram" className={input} />
       </div>
       {state.error && (
         <p role="alert" className="text-sm text-red-600">

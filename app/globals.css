@@ -13,9 +13,9 @@
   --color-elevated: #ece6da;  /* contrast bands / hover */
   --color-ink: #221f1b;       /* warm graphite — primary text (~14:1) */
   --color-muted: #6b6358;     /* taupe — secondary text */
-  --color-faint: #938979;     /* light taupe — labels, captions */
+  --color-faint: #6f6557;     /* taupe — labels/captions (AA: ~5:1 on cream) */
   --color-line: #dcd5c8;      /* warm hairline border */
-  --color-accent: #8a6e49;    /* antique bronze — links / price / focus */
+  --color-accent: #806645;    /* antique bronze — links / price / focus (AA ~4.7:1) */
   --color-accent-soft: #a3855c;
   --color-onaccent: #f7f4ee;  /* text on the bronze accent */
 
@@ -37,6 +37,8 @@ body {
   font-family: var(--ff-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Full-bleed hero uses 100vw; prevent a stray horizontal scrollbar. */
+  overflow-x: hidden;
 }
 
 ::selection {
@@ -49,7 +51,7 @@ body {
   font-size: 0.7rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #7a6d5f; /* darker taupe — legible on the cream canvas */
+  color: var(--color-faint); /* AA-legible taupe on the cream canvas */
 }
 
 /* Hairline bronze divider (muted on the light canvas). */

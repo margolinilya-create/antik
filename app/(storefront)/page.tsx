@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Sparkles, Landmark, KeyRound } from "lucide-react";
@@ -9,6 +10,10 @@ import { Testimonials } from "@/components/marketing/Testimonials";
 import { Newsletter } from "@/components/marketing/Newsletter";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const CATEGORIES = [
   { slug: "zhivopis", name: "Живопись" },
@@ -135,8 +140,9 @@ export default async function HomePage() {
         </div>
         {items.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 lg:grid-cols-4">
-            {items.map((item, i) => (
-              <ItemCard key={item.id} item={item} priority={i < 4} />
+            {items.map((item) => (
+              // No priority here: the full-bleed hero is the LCP — let arrivals lazy-load.
+              <ItemCard key={item.id} item={item} />
             ))}
           </div>
         ) : (

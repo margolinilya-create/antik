@@ -28,13 +28,13 @@ export default async function SearchPage({
       {q && <p className="eyebrow">Найдено: {total}</p>}
 
       {items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (
             <ItemCard key={item.id} item={item} />
           ))}
         </div>
       ) : (
-        <p className="rounded-sm border border-dashed border-line bg-surface px-4 py-16 text-center text-sm text-muted">
+        <p className="border border-dashed border-line bg-surface px-4 py-16 text-center text-sm text-muted">
           {q ? "Ничего не найдено. Попробуйте другой запрос." : "Введите запрос для поиска."}
         </p>
       )}

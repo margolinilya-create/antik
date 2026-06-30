@@ -25,7 +25,7 @@ export default async function CheckoutPage({
       <h1 className="font-display text-3xl font-medium tracking-tight">Оставить заявку</h1>
 
       {item && (
-        <div className="flex items-center justify-between rounded-sm border border-line bg-surface px-4 py-3">
+        <div className="flex items-center justify-between border border-line bg-surface px-4 py-3">
           <div>
             <Link href={`/item/${item.slug}`} className="text-base font-medium hover:text-accent">
               {item.title_ru}

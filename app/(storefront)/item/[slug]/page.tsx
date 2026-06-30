@@ -57,6 +57,8 @@ export async function generateMetadata({
       description,
       type: "website",
       url: `/item/${item.slug}`,
+      locale: "ru_RU",
+      siteName: "RELIQUA",
     },
   };
 }
@@ -156,39 +158,48 @@ export default async function ItemPage({
             <span className="font-display text-2xl font-medium tracking-wide text-ink">
               {formatPrice(item.price, item.currency, item.price_on_request)}
             </span>
-            {item.status !== "in_stock" && (
+            {item.status === "in_stock" ? (
+              <span className="inline-flex items-center gap-1.5 text-[0.65rem] font-medium uppercase tracking-[0.16em] text-muted">
+                <span className="size-1.5 rounded-full bg-green-700" aria-hidden /> В наличии
+              </span>
+            ) : (
               <span className="border border-line px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.16em] text-accent">
                 {statusLabel[item.status]}
               </span>
             )}
           </div>
 
+          {/* CTA hierarchy: one solid primary, then secondary actions grouped. */}
           <div className="space-y-2.5">
             <ReserveButton slug={item.slug} status={item.status} />
-            {item.status !== "sold" && (
+            {item.status !== "sold" ? (
               <>
                 <MakeOffer slug={item.slug} />
-                <AddToCartButton
-                  item={{
-                    slug: item.slug,
-                    title: item.title_ru,
-                    price: item.price,
-                    currency: item.currency,
-                    price_on_request: item.price_on_request,
-                    image: item.images[0]
-                      ? imageUrl(item.images[0].storage_path, { width: 200 })
-                      : null,
-                  }}
-                />
+                <div className="grid grid-cols-2 gap-2.5">
+                  <AddToCartButton
+                    item={{
+                      slug: item.slug,
+                      title: item.title_ru,
+                      price: item.price,
+                      currency: item.currency,
+                      price_on_request: item.price_on_request,
+                      image: item.images[0]
+                        ? imageUrl(item.images[0].storage_path, { width: 200 })
+                        : null,
+                    }}
+                  />
+                  <FavoriteButton item={row} variant="full" />
+                </div>
               </>
+            ) : (
+              <FavoriteButton item={row} variant="full" />
             )}
-            <FavoriteButton item={row} variant="full" />
           </div>
 
           <TrustBadges />
 
           {specs.length > 0 && (
-            <dl className="divide-y divide-line rounded-sm border border-line bg-surface text-sm">
+            <dl className="divide-y divide-line border border-line bg-surface text-sm">
               {specs.map((s, i) => (
                 <div key={i} className="flex justify-between gap-4 px-4 py-3">
                   <dt className="text-[0.7rem] uppercase tracking-[0.1em] text-muted">

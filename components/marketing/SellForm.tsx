@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { sellRequest, type LeadState } from "@/app/(storefront)/leads";
 
 const input =
-  "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent";
+  "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent";
 const lbl = "mb-1.5 block text-[0.7rem] uppercase tracking-[0.14em] text-faint";
 
 export function SellForm() {
@@ -24,26 +24,27 @@ export function SellForm() {
   return (
     <form action={action} className="space-y-4">
       <div>
-        <label className={lbl}>Имя *</label>
-        <input name="customer_name" required className={input} />
+        <label htmlFor="sell-name" className={lbl}>Имя *</label>
+        <input id="sell-name" name="customer_name" required className={input} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className={lbl}>Телефон</label>
-          <input name="phone" type="tel" className={input} placeholder="+7…" />
+          <label htmlFor="sell-phone" className={lbl}>Телефон</label>
+          <input id="sell-phone" name="phone" type="tel" className={input} placeholder="+7…" />
         </div>
         <div>
-          <label className={lbl}>Telegram</label>
-          <input name="telegram" className={input} placeholder="@username" />
+          <label htmlFor="sell-telegram" className={lbl}>Telegram</label>
+          <input id="sell-telegram" name="telegram" className={input} placeholder="@username" />
         </div>
       </div>
       <div>
-        <label className={lbl}>Email</label>
-        <input name="email" type="email" className={input} />
+        <label htmlFor="sell-email" className={lbl}>Email</label>
+        <input id="sell-email" name="email" type="email" className={input} />
       </div>
       <div>
-        <label className={lbl}>Что продаёте</label>
+        <label htmlFor="sell-message" className={lbl}>Что продаёте</label>
         <textarea
+          id="sell-message"
           name="message_ru"
           rows={4}
           className={input}

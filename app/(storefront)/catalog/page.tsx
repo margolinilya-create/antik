@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { searchItems, type SearchFilters } from "@/lib/queries/items";
 import { ItemCard } from "@/components/catalog/ItemCard";
 import { FacetSidebar } from "@/components/catalog/FacetSidebar";
+import { SortSelect } from "@/components/catalog/SortSelect";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 
 export const metadata: Metadata = {
@@ -67,7 +69,10 @@ export default async function CatalogPage({
         <div className="flex-1">
           {items.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              <div className="mb-6 flex items-center justify-end">
+                <SortSelect current={filters.sort ?? "newest"} params={flatParams} />
+              </div>
+              <div className="grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 lg:grid-cols-4">
                 {items.map((item, i) => (
                   <ItemCard key={item.id} item={item} priority={i < 4} />
                 ))}
@@ -77,9 +82,17 @@ export default async function CatalogPage({
               )}
             </>
           ) : (
-            <p className="rounded-sm border border-dashed border-line bg-surface px-4 py-16 text-center text-sm text-muted">
-              Ничего не найдено. Попробуйте сбросить фильтры.
-            </p>
+            <div className="border border-dashed border-line bg-surface px-4 py-16 text-center">
+              <p className="text-sm text-muted">По вашему запросу ничего не найдено.</p>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs uppercase tracking-[0.16em]">
+                <Link href="/catalog" className="link-underline pb-0.5 text-ink">
+                  Сбросить фильтры
+                </Link>
+                <Link href="/sell" className="link-underline pb-0.5 text-accent">
+                  Не нашли нужное? Закажите подбор →
+                </Link>
+              </div>
+            </div>
           )}
         </div>
       </div>

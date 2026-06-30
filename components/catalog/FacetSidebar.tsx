@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
 import type { Facets } from "@/types/database";
@@ -63,29 +66,44 @@ export function FacetSidebar({
   facets: Facets;
   params: Params;
 }) {
-  const hasActive = ["category", "era", "maker", "material", "condition", "q"].some(
+  const [open, setOpen] = useState(false);
+  const activeKeys = ["category", "era", "maker", "material", "condition", "q"].filter(
     (k) => params[k],
   );
+  const hasActive = activeKeys.length > 0;
   return (
     <aside className="w-full shrink-0 md:w-56">
-      {hasActive && (
-        <Link
-          href="/catalog"
-          className="mb-3 inline-block text-sm text-muted transition-colors hover:text-accent"
-        >
-          ✕ Сбросить фильтры
-        </Link>
-      )}
-      <FacetGroup title="Категория" facetKey="category" values={facets.categories} params={params} />
-      <FacetGroup title="Эпоха" facetKey="era" values={facets.eras} params={params} />
-      <FacetGroup title="Мастер / автор" facetKey="maker" values={facets.makers} params={params} />
-      <FacetGroup title="Материал" facetKey="material" values={facets.materials} params={params} />
-      {facets.price && facets.price.min != null && (
-        <div className="py-4 text-sm text-ink/80">
-          <h3 className="eyebrow mb-2">Цена</h3>
-          от {formatPrice(facets.price.min)} до {formatPrice(facets.price.max)}
-        </div>
-      )}
+      {/* Mobile: collapse facets behind a toggle so products show first. */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="mb-4 flex w-full items-center justify-between border border-line px-4 py-3 text-xs uppercase tracking-[0.16em] text-ink md:hidden"
+      >
+        <span>Фильтры{hasActive ? ` · ${activeKeys.length}` : ""}</span>
+        <span aria-hidden>{open ? "−" : "+"}</span>
+      </button>
+
+      <div className={`${open ? "block" : "hidden"} md:block`}>
+        {hasActive && (
+          <Link
+            href="/catalog"
+            className="mb-3 inline-block text-sm text-muted transition-colors hover:text-accent"
+          >
+            ✕ Сбросить фильтры
+          </Link>
+        )}
+        <FacetGroup title="Категория" facetKey="category" values={facets.categories} params={params} />
+        <FacetGroup title="Эпоха" facetKey="era" values={facets.eras} params={params} />
+        <FacetGroup title="Мастер / автор" facetKey="maker" values={facets.makers} params={params} />
+        <FacetGroup title="Материал" facetKey="material" values={facets.materials} params={params} />
+        {facets.price && facets.price.min != null && (
+          <div className="py-4 text-sm text-ink/80">
+            <h3 className="eyebrow mb-2">Цена</h3>
+            от {formatPrice(facets.price.min)} до {formatPrice(facets.price.max)}
+          </div>
+        )}
+      </div>
     </aside>
   );
 }

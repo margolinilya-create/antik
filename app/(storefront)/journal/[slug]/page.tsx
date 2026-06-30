@@ -26,7 +26,13 @@ export async function generateMetadata({
     title: post.seo_title ?? post.title_ru,
     description: post.seo_description ?? post.excerpt_ru ?? undefined,
     alternates: { canonical: `/journal/${slug}` },
-    openGraph: { title: post.title_ru, description: post.excerpt_ru ?? undefined, type: "article" },
+    openGraph: {
+      title: post.title_ru,
+      description: post.excerpt_ru ?? undefined,
+      type: "article",
+      locale: "ru_RU",
+      siteName: "RELIQUA",
+    },
   };
 }
 

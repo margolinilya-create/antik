@@ -20,7 +20,7 @@ export function InquiryForm({ itemSlug }: { itemSlug?: string }) {
   }
 
   const input =
-    "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent";
+    "w-full border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent";
   const lbl = "mb-1.5 block text-[0.7rem] uppercase tracking-[0.14em] text-faint";
 
   return (
@@ -29,26 +29,26 @@ export function InquiryForm({ itemSlug }: { itemSlug?: string }) {
       <input type="hidden" name="type" value="reserve" />
 
       <div>
-        <label className={lbl}>Имя *</label>
-        <input name="customer_name" required className={input} />
+        <label htmlFor="inq-name" className={lbl}>Имя *</label>
+        <input id="inq-name" name="customer_name" required className={input} />
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className={lbl}>Телефон</label>
-          <input name="phone" type="tel" className={input} placeholder="+7…" />
+          <label htmlFor="inq-phone" className={lbl}>Телефон</label>
+          <input id="inq-phone" name="phone" type="tel" className={input} placeholder="+7…" />
         </div>
         <div>
-          <label className={lbl}>Telegram</label>
-          <input name="telegram" className={input} placeholder="@username" />
+          <label htmlFor="inq-telegram" className={lbl}>Telegram</label>
+          <input id="inq-telegram" name="telegram" className={input} placeholder="@username" />
         </div>
       </div>
       <div>
-        <label className={lbl}>Email</label>
-        <input name="email" type="email" className={input} />
+        <label htmlFor="inq-email" className={lbl}>Email</label>
+        <input id="inq-email" name="email" type="email" className={input} />
       </div>
       <div>
-        <label className={lbl}>Сообщение</label>
-        <textarea name="message_ru" rows={3} className={input} />
+        <label htmlFor="inq-message" className={lbl}>Сообщение</label>
+        <textarea id="inq-message" name="message_ru" rows={3} className={input} />
       </div>
 
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}

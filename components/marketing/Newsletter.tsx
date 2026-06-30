@@ -36,7 +36,7 @@ export function Newsletter({
           required
           placeholder="Ваш email"
           aria-label="Email для подписки"
-          className="min-w-0 flex-1 border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent"
+          className="min-w-0 flex-1 border border-line bg-bg px-3 py-2.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent"
         />
         <button
           type="submit"

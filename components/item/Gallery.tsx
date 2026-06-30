@@ -18,7 +18,8 @@ export function Gallery({ images, title }: { images: ItemImage[]; title: string 
           fill
           priority
           sizes="(max-width: 768px) 100vw, 600px"
-          className="object-cover"
+          // Contain (not crop) so the full artifact + its condition is visible.
+          className="object-contain"
         />
       </div>
       {images.length > 1 && (
