@@ -22,7 +22,7 @@ export default async function CheckoutPage({
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
-      <h1 className="text-3xl font-light tracking-tight">Оставить заявку</h1>
+      <h1 className="font-display text-3xl font-medium tracking-tight">Оставить заявку</h1>
 
       {item && (
         <div className="flex items-center justify-between rounded-sm border border-line bg-surface px-4 py-3">

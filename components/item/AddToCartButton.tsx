@@ -13,7 +13,7 @@ export function AddToCartButton({ item }: { item: CartItem }) {
       <button
         type="button"
         onClick={() => router.push("/cart")}
-        className="w-full border border-accent px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-colors hover:bg-accent/10"
+        className="w-full border border-ink/25 px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-bg"
       >
         В подборке — перейти →
       </button>
@@ -24,7 +24,7 @@ export function AddToCartButton({ item }: { item: CartItem }) {
     <button
       type="button"
       onClick={() => add(item)}
-      className="w-full border border-line px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-muted transition-colors hover:border-accent hover:text-ink"
+      className="w-full border border-ink/25 px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-bg"
     >
       Добавить в подборку
     </button>

@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/format";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Антик — предмет";
+export const alt = "RELIQUA — предмет";
 
 export default async function Image({
   params,
@@ -14,7 +14,7 @@ export default async function Image({
 }) {
   const { slug } = await params;
   const item = await getItemBySlug(slug);
-  const title = item?.title_ru ?? "Антик — антикварная галерея";
+  const title = item?.title_ru ?? "RELIQUA — антикварная галерея";
   const price =
     item && item.status === "in_stock"
       ? formatPrice(item.price, item.currency, item.price_on_request)
@@ -34,9 +34,9 @@ export default async function Image({
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#0f0f10",
-          color: "#f2efe9",
-          fontFamily: "sans-serif",
+          background: "#f4f1ea",
+          color: "#221f1b",
+          fontFamily: "serif",
         }}
       >
         <div
@@ -51,21 +51,21 @@ export default async function Image({
           <div
             style={{
               fontSize: 24,
-              letterSpacing: 8,
+              letterSpacing: 10,
               textTransform: "uppercase",
-              color: "#c8a96a",
+              color: "#8a6e49",
             }}
           >
-            Антик · Галерея
+            RELIQUA · Галерея
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ height: 1, width: 96, background: "#c8a96a", marginBottom: 28 }} />
+            <div style={{ height: 1, width: 96, background: "#8a6e49", marginBottom: 28 }} />
             <div style={{ fontSize: 58, lineHeight: 1.1, maxWidth: 560 }}>{title}</div>
             {price && (
-              <div style={{ marginTop: 28, fontSize: 34, color: "#c8a96a" }}>{price}</div>
+              <div style={{ marginTop: 28, fontSize: 34, color: "#8a6e49" }}>{price}</div>
             )}
           </div>
-          <div style={{ fontSize: 22, color: "#9c968b" }}>
+          <div style={{ fontSize: 22, color: "#6b6358" }}>
             Антиквариат с провенансом и экспертизой
           </div>
         </div>

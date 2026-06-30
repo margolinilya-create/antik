@@ -26,7 +26,7 @@ export default async function BrandsPage() {
 
       <header className="max-w-2xl">
         <p className="eyebrow text-accent">Мастера и мануфактуры</p>
-        <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           Бренды антиквариата
         </h1>
         <p className="mt-5 leading-relaxed text-muted">

@@ -62,7 +62,7 @@ export default async function MakerPage({
       {/* Brand hero */}
       <header className="max-w-3xl">
         <p className="eyebrow text-accent">Бренд · мануфактура</p>
-        <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-6xl">
+        <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-6xl">
           {maker.name_ru}
         </h1>
         {meta && (

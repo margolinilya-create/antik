@@ -18,7 +18,7 @@ export function ItemCard({ item, priority = false }: { item: ItemListRow; priori
           sizes="(max-width: 768px) 50vw, 320px"
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
         />
-        <span className="pointer-events-none absolute inset-0 border border-transparent transition-colors duration-500 group-hover:border-accent/40" />
+        <span className="pointer-events-none absolute inset-0 border border-transparent transition-colors duration-500 group-hover:border-ink/20" />
         {item.status !== "in_stock" && (
           <span className="pointer-events-none absolute left-3 top-3 bg-bg/80 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-ink backdrop-blur">
             {statusLabel[item.status]}
@@ -32,7 +32,7 @@ export function ItemCard({ item, priority = false }: { item: ItemListRow; priori
             {item.category}
           </p>
         )}
-        <h3 className="mt-2 line-clamp-2 text-[0.95rem] font-medium leading-snug text-ink transition-colors group-hover:text-accent">
+        <h3 className="mt-2 line-clamp-2 font-display text-[1.05rem] font-medium leading-snug text-ink transition-colors group-hover:text-accent">
           <Link href={`/item/${item.slug}`} className="after:absolute after:inset-0 after:z-10">
             {item.title_ru}
           </Link>

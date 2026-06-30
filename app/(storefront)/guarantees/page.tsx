@@ -49,7 +49,7 @@ export default function GuaranteesPage() {
 
       <header className="max-w-2xl">
         <p className="eyebrow text-accent">Условия покупки</p>
-        <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           Гарантии, доставка и возврат
         </h1>
         <p className="mt-6 leading-relaxed text-muted">

@@ -57,7 +57,7 @@ export default async function CatalogPage({
         ]}
       />
       <div className="flex items-baseline justify-between border-b border-line pb-4">
-        <h1 className="text-3xl font-light tracking-tight">Каталог</h1>
+        <h1 className="font-display text-3xl font-medium tracking-tight">Каталог</h1>
         <span className="eyebrow">{total} предметов</span>
       </div>
 

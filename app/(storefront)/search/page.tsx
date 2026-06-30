@@ -22,7 +22,7 @@ export default async function SearchPage({
 
   return (
     <div className="space-y-5">
-      <h1 className="text-3xl font-light tracking-tight">
+      <h1 className="font-display text-3xl font-medium tracking-tight">
         {q ? `Результаты поиска: «${q}»` : "Поиск"}
       </h1>
       {q && <p className="eyebrow">Найдено: {total}</p>}

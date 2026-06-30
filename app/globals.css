@@ -1,33 +1,34 @@
 @import "tailwindcss";
 
 /* =====================================================================
-   Антик — "Gallery Noir" modern-luxury design system
-   Near-black gallery canvas · bone/ivory text · a single champagne-gold
-   accent used sparingly (hairlines, hover, price) · contemporary sans
-   (Manrope) · vast negative space. Phillips / Sotheby's / quiet-luxury.
+   RELIQUA — light editorial "quiet-luxury" design system
+   Warm cream canvas · graphite ink · a single antique-bronze accent used
+   sparingly (links, price, focus) · classical display serif (Playfair) +
+   contemporary sans (Manrope) for body/UI · vast negative space. Museum /
+   gallery / 1stDibs / curated-objects.
    ===================================================================== */
 @theme {
-  --color-bg: #0f0f10;        /* near-black, faintly warm — page */
-  --color-surface: #161617;   /* charcoal — cards / sections */
-  --color-elevated: #1d1d1f;  /* hover / raised */
-  --color-ink: #f2efe9;       /* bone / ivory — primary text */
-  --color-muted: #9c968b;     /* warm gray — secondary text */
-  --color-faint: #6a655c;     /* tertiary — labels, captions */
-  --color-line: #2a2a2c;      /* hairline border on dark */
-  --color-accent: #c8a96a;    /* champagne gold — sparing accent */
-  --color-accent-soft: #ddc79e;
-  --color-onaccent: #14130f;  /* text on the gold accent */
+  --color-bg: #f4f1ea;        /* warm cream — page */
+  --color-surface: #faf8f2;   /* warm white — cards */
+  --color-elevated: #ece6da;  /* contrast bands / hover */
+  --color-ink: #221f1b;       /* warm graphite — primary text (~14:1) */
+  --color-muted: #6b6358;     /* taupe — secondary text */
+  --color-faint: #938979;     /* light taupe — labels, captions */
+  --color-line: #dcd5c8;      /* warm hairline border */
+  --color-accent: #8a6e49;    /* antique bronze — links / price / focus */
+  --color-accent-soft: #a3855c;
+  --color-onaccent: #f7f4ee;  /* text on the bronze accent */
 
   --radius: 2px;
 }
 
 @theme inline {
   --font-sans: var(--ff-sans);
-  --font-display: var(--ff-sans);
+  --font-display: var(--ff-display);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
@@ -51,10 +52,21 @@ body {
   color: var(--color-faint);
 }
 
-/* Hairline champagne divider. */
+/* Hairline bronze divider (muted on the light canvas). */
 .gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, var(--color-accent), transparent);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-accent) 45%, transparent),
+    transparent
+  );
+}
+
+/* Centered short rule used under hero/section eyebrows (RELIQUA reference). */
+.rule-center {
+  height: 1px;
+  width: 4rem;
+  background: color-mix(in srgb, var(--color-accent) 70%, transparent);
 }
 
 /* Animated underline for editorial links. */

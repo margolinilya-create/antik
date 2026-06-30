@@ -51,7 +51,7 @@ export default async function EraPage({
         ]}
       />
       <div className="flex items-baseline justify-between">
-        <h1 className="text-3xl font-light tracking-tight">{term.name_ru}</h1>
+        <h1 className="font-display text-3xl font-medium tracking-tight">{term.name_ru}</h1>
         <span className="eyebrow">{total} предметов</span>
       </div>
 

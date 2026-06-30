@@ -28,7 +28,7 @@ export function ReserveButton({
   return (
     <Link
       href={`/checkout?item=${slug}`}
-      className="block w-full bg-accent px-5 py-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-onaccent transition-colors hover:bg-accent-soft"
+      className="block w-full bg-ink px-5 py-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-bg transition-colors hover:bg-ink/85"
     >
       {status === "reserved" ? "Узнать о предмете" : "Запросить предмет"}
     </Link>

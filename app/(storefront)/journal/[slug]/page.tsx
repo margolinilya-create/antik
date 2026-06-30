@@ -62,7 +62,7 @@ export default async function JournalPostPage({
             })}
           </time>
         )}
-        <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           {post.title_ru}
         </h1>
         {post.excerpt_ru && (

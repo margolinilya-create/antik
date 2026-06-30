@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { Sparkles, Landmark, KeyRound } from "lucide-react";
 import { searchItems } from "@/lib/queries/items";
 import { listTestimonials, listJournalPosts } from "@/lib/queries/content";
 import { ItemCard } from "@/components/catalog/ItemCard";
@@ -17,6 +19,12 @@ const CATEGORIES = [
   { slug: "monety", name: "Монеты" },
 ];
 
+const MARKERS = [
+  { Icon: Sparkles, title: "Кураторский отбор" },
+  { Icon: Landmark, title: "Европейское наследие" },
+  { Icon: KeyRound, title: "Предметы с историей" },
+];
+
 export default async function HomePage() {
   const [{ items }, testimonials, posts] = await Promise.all([
     searchItems({ limit: 8, sort: "newest" }),
@@ -26,25 +34,62 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-24">
-      {/* Hero */}
-      <section className="pt-10 md:pt-20">
-        <p className="eyebrow text-accent">Антикварная галерея · с 1999</p>
-        <h1 className="mt-6 max-w-4xl text-balance text-4xl font-light leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-          Предметы с историей —{" "}
-          <span className="text-muted">отобранные с экспертизой</span>
-        </h1>
-        <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4">
-          <Link
-            href="/catalog"
-            className="group inline-flex items-center gap-3 bg-accent px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-onaccent transition-colors hover:bg-accent-soft"
-          >
-            Смотреть коллекцию
-            <span className="transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-          <p className="max-w-sm text-sm leading-relaxed text-muted">
-            Курируемое собрание антиквариата. Каждый предмет уникален,
+      {/* Hero — full-bleed photograph (breaks out of the 1280px container) */}
+      <section className="relative -mt-10 ml-[calc(50%-50vw)] flex h-[80vh] min-h-[520px] w-screen items-center justify-center overflow-hidden md:-mt-14">
+        <Image
+          src="/hero.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/65" />
+        <div className="relative z-10 mx-auto max-w-2xl px-5 text-center text-[#f6f2ea]">
+          <p className="text-[0.6rem] uppercase tracking-[0.34em] text-[#e7dcc6]">
+            Антикварная галерея · с 1999
+          </p>
+          <h1 className="mt-5 font-display text-4xl font-medium leading-[1.08] tracking-wide sm:text-6xl">
+            Предметы с историей
+          </h1>
+          <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[#ece4d4] sm:text-base">
+            Курируемое собрание антиквариата — каждый предмет уникален,
             атрибутирован и представлен в единственном экземпляре.
           </p>
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/catalog"
+              className="border border-[#f6f2ea]/55 px-9 py-3.5 text-[0.7rem] font-medium uppercase tracking-[0.22em] text-[#f6f2ea] transition-colors hover:bg-[#f6f2ea] hover:text-ink"
+            >
+              Смотреть коллекцию
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro — gallery statement + line-icon trust markers */}
+      <section className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+        <div>
+          <p className="text-base leading-relaxed text-muted sm:text-lg">
+            RELIQUA — галерея и источник исключительного антиквариата и предметов
+            с историей, отобранных за красоту, мастерство и непреходящую ценность.
+          </p>
+          <Link
+            href="/about"
+            className="link-underline mt-6 inline-block pb-1 text-xs font-medium uppercase tracking-[0.2em] text-ink"
+          >
+            О RELIQUA
+          </Link>
+        </div>
+        <div className="grid grid-cols-3 gap-6">
+          {MARKERS.map(({ Icon, title }) => (
+            <div key={title} className="flex flex-col items-center text-center">
+              <Icon className="size-7 text-ink" strokeWidth={1} aria-hidden />
+              <p className="mt-4 text-[0.62rem] uppercase leading-relaxed tracking-[0.18em] text-muted">
+                {title}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -77,7 +122,7 @@ export default async function HomePage() {
         <div className="mb-8 flex items-end justify-between">
           <div>
             <p className="eyebrow text-accent">В наличии</p>
-            <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
+            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl">
               Новые поступления
             </h2>
           </div>
@@ -110,7 +155,7 @@ export default async function HomePage() {
           <div className="mb-8 flex items-end justify-between">
             <div>
               <p className="eyebrow text-accent">Журнал</p>
-              <h2 className="mt-2 text-2xl font-light tracking-tight sm:text-3xl">
+              <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl">
                 Гиды коллекционеру
               </h2>
             </div>
@@ -146,7 +191,7 @@ export default async function HomePage() {
       <section className="border border-line bg-surface p-8 sm:p-12">
         <div className="grid items-center gap-8 md:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-light tracking-tight">
+            <h2 className="font-display text-2xl font-medium tracking-tight sm:text-3xl">
               Новые поступления — первыми
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">

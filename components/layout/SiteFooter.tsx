@@ -29,8 +29,11 @@ export function SiteFooter() {
     <footer className="mt-28 border-t border-line">
       <div className="mx-auto grid max-w-[1280px] gap-12 px-5 py-16 md:grid-cols-4">
         <div>
-          <p className="text-base font-semibold uppercase tracking-[0.42em] text-ink">
-            Антик
+          <p className="font-display text-xl tracking-[0.3em] text-ink">
+            {site.name}
+          </p>
+          <p className="mt-1.5 text-[0.5rem] tracking-[0.32em] text-faint">
+            {site.wordmarkTagline}
           </p>
           <div className="gold-rule my-4 max-w-[100px]" />
           <p className="text-sm leading-relaxed text-muted">{site.tagline}.</p>

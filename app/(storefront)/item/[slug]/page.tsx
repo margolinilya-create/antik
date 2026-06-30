@@ -139,7 +139,7 @@ export default async function ItemPage({
         <div className="space-y-6 md:pt-4">
           <div>
             {item.category && <p className="eyebrow mb-3 text-accent">{item.category.name_ru}</p>}
-            <h1 className="text-3xl font-light leading-tight tracking-tight sm:text-4xl">
+            <h1 className="font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
               {item.title_ru}
             </h1>
             {item.subtitle_ru && (

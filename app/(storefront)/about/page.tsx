@@ -29,7 +29,7 @@ export default function AboutPage() {
 
       <header className="max-w-3xl">
         <p className="eyebrow text-accent">О галерее</p>
-        <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           Антиквариат, которому можно доверять
         </h1>
         <p className="mt-6 text-lg font-light leading-relaxed text-muted">

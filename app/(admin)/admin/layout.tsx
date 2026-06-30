@@ -21,7 +21,7 @@ export default async function AdminLayout({
     <div className="flex min-h-screen bg-stone-100">
       <aside className="hidden w-56 shrink-0 flex-col border-r border-stone-200 bg-white p-4 md:flex">
         <Link href="/admin" className="text-lg font-semibold">
-          Антик · админ
+          RELIQUA · админ
         </Link>
         <nav className="mt-6 flex flex-col gap-1 text-sm">
           {NAV.map((n) => (

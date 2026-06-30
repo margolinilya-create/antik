@@ -6,8 +6,10 @@ import { env } from "@/lib/env";
  * Placeholder contact details — replace with the gallery's real data.
  */
 export const site = {
-  name: "Антик",
-  legalName: "Антикварная галерея «Антик»",
+  name: "RELIQUA",
+  legalName: "Антикварная галерея RELIQUA",
+  /** Latin tagline shown under the wordmark (matches the gallery reference). */
+  wordmarkTagline: "FINE ANTIQUES & CURATED OBJECTS",
   get url() {
     return env.siteUrl;
   },

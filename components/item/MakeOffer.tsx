@@ -15,7 +15,7 @@ export function MakeOffer({ slug }: { slug: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="w-full border border-line px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-muted transition-colors hover:border-accent hover:text-ink"
+        className="w-full border border-ink/25 px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-bg"
       >
         Сделать предложение
       </button>
@@ -41,7 +41,7 @@ export function MakeOffer({ slug }: { slug: string }) {
         <input name="telegram" placeholder="Telegram" className={input} />
       </div>
       {state.error && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-600">
           {state.error}
         </p>
       )}
@@ -49,7 +49,7 @@ export function MakeOffer({ slug }: { slug: string }) {
         <button
           type="submit"
           disabled={pending}
-          className="flex-1 bg-accent px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-onaccent transition-colors hover:bg-accent-soft disabled:opacity-60"
+          className="flex-1 bg-ink px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-bg transition-colors hover:bg-ink/85 disabled:opacity-60"
         >
           {pending ? "Отправка…" : "Отправить"}
         </button>

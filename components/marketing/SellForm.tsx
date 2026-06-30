@@ -51,14 +51,14 @@ export function SellForm() {
         />
       </div>
       {state.error && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-600">
           {state.error}
         </p>
       )}
       <button
         type="submit"
         disabled={pending}
-        className="w-full bg-accent px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-onaccent transition-colors hover:bg-accent-soft disabled:opacity-60"
+        className="w-full bg-ink px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-bg transition-colors hover:bg-ink/85 disabled:opacity-60"
       >
         {pending ? "Отправка…" : "Отправить на оценку"}
       </button>

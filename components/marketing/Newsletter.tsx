@@ -41,13 +41,13 @@ export function Newsletter({
         <button
           type="submit"
           disabled={pending}
-          className="shrink-0 bg-accent px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-onaccent transition-colors hover:bg-accent-soft disabled:opacity-60"
+          className="shrink-0 border border-ink/25 px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-ink transition-colors hover:bg-ink hover:text-bg disabled:opacity-60"
         >
           {pending ? "…" : "Подписаться"}
         </button>
       </div>
       {state.error && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-600">
           {state.error}
         </p>
       )}

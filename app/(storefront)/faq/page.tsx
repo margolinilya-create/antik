@@ -59,7 +59,7 @@ export default function FaqPage() {
 
       <header className="max-w-2xl">
         <p className="eyebrow text-accent">Поддержка</p>
-        <h1 className="mt-4 text-4xl font-light leading-tight tracking-tight sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           Вопросы и ответы
         </h1>
       </header>

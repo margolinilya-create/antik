@@ -10,7 +10,7 @@ export function GuaranteesStrip() {
         const Icon = icons[i] ?? ShieldCheck;
         return (
           <div key={g.title} className="bg-bg p-6">
-            <Icon className="size-6 text-accent" strokeWidth={1.4} aria-hidden />
+            <Icon className="size-6 text-ink" strokeWidth={1} aria-hidden />
             <h3 className="mt-4 text-sm font-medium tracking-tight text-ink">
               {g.title}
             </h3>
