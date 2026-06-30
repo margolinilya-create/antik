@@ -69,10 +69,10 @@ export function SiteHeader() {
           aria-label={`${site.name} — на главную`}
           className="flex flex-col items-center justify-center leading-none"
         >
-          <span className="font-display text-xl tracking-[0.32em] text-ink sm:text-2xl">
+          <span className="font-display text-2xl tracking-[0.3em] text-ink sm:text-[1.7rem]">
             {site.name}
           </span>
-          <span className="mt-1.5 hidden text-[0.5rem] tracking-[0.34em] text-faint sm:block">
+          <span className="mt-2 hidden text-[0.55rem] tracking-[0.34em] text-faint sm:block">
             {site.wordmarkTagline}
           </span>
         </Link>

@@ -42,7 +42,7 @@ export default async function HomePage() {
       {/* Hero — full-bleed photograph (breaks out of the 1280px container) */}
       <section className="relative -mt-10 ml-[calc(50%-50vw)] flex h-[80vh] min-h-[520px] w-screen items-center justify-center overflow-hidden md:-mt-14">
         <Image
-          src="/hero.jpg"
+          src="/hero-gallery.jpg"
           alt=""
           fill
           priority
