@@ -40,6 +40,9 @@ export const metadata: Metadata = {
     locale: "ru_RU",
     siteName: "RELIQUA",
   },
+  twitter: {
+    card: "summary_large_image",
+  },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/icon.svg" }],
