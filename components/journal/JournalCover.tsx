@@ -39,7 +39,8 @@ export function JournalCover({
           fill
           sizes={sizes}
           priority={priority}
-          className="object-cover"
+          // Contain (never crop): the full object stays visible on a calm mat.
+          className="object-contain"
         />
       </div>
     );

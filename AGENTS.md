@@ -13,6 +13,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 вариантов. Доступность = поле `items.status` (`draft | in_stock | reserved |
 sold | archived`). Проданные предметы **не удаляем** — они ценны для SEO.
 
+## Правило изображений предметов
+**Фотографии предметов НИКОГДА не обрезаем** (`object-cover` запрещён для фото
+предметов) — предмет всегда виден целиком: `object-contain` на спокойном фоне
+(`bg-surface`)-паспарту. Касается карточек товара, галереи предмета, корзины,
+обложек и любых превью в журнале. Исключение — атмосферный фуллскрин-герой
+(`hero-gallery.jpg`), это не фото предмета.
+
 ## Стек
 - Next.js 16 (App Router, TypeScript, Server Components) + React 19
 - Supabase (Postgres + Auth + Storage), RLS-first

@@ -62,7 +62,7 @@ export function CartView() {
         {items.map((i) => (
           <li key={i.slug} className="flex items-center gap-4 py-4">
             <div className="relative size-16 shrink-0 overflow-hidden bg-surface">
-              <Image src={i.image || "/placeholder.svg"} alt={i.title} fill sizes="64px" className="object-cover" />
+              <Image src={i.image || "/placeholder.svg"} alt={i.title} fill sizes="64px" className="object-contain p-1" />
             </div>
             <div className="flex-1">
               <Link href={`/item/${i.slug}`} className="text-sm font-medium text-ink transition-colors hover:text-accent">

@@ -16,7 +16,8 @@ export function ItemCard({ item, priority = false }: { item: ItemListRow; priori
           fill
           priority={priority}
           sizes="(max-width: 768px) 50vw, 320px"
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+          // Contain (never crop): the whole item is always visible, gallery-style.
+          className="object-contain p-4"
         />
         <span className="pointer-events-none absolute inset-0 border border-transparent transition-colors duration-500 group-hover:border-ink/20" />
         {item.status !== "in_stock" && (

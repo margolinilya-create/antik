@@ -64,10 +64,10 @@ const COVERS: Record<string, JournalCoverMeta> = {
   },
   "staraya-gzhel": {
     src: "/journal/staraya-gzhel.jpg",
-    author: "Лапоть · музей-заповедник «Царицыно»",
-    license: "CC0",
-    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Gzhel_-_Tsaritsyno_Museum.jpg",
+    author: "Валентин Розанов",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:1976.%D0%9A%D1%83%D0%BC%D0%B3%D0%B0%D0%BD..JPG",
   },
   "modern-steklo-galle-podlinnik": {
     src: "/journal/modern-steklo-galle-podlinnik.jpg",

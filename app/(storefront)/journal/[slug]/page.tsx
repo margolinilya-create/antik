@@ -6,7 +6,6 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildArticleJsonLd } from "@/lib/seo/jsonld";
 import { JournalCover } from "@/components/journal/JournalCover";
-import { JournalAvatar } from "@/components/journal/JournalAvatar";
 import { journalTheme, readingMinutes } from "@/lib/journal-art";
 import { coverFor } from "@/lib/journal-covers";
 
@@ -77,22 +76,19 @@ export default async function JournalPostPage({
           </p>
         )}
 
-        {/* Byline: article avatar, source, date, reading time */}
-        <div className="mt-7 flex items-center gap-3 border-y border-line py-4">
-          <JournalAvatar post={post} size={44} />
-          <div className="text-sm">
-            <p className="font-medium text-ink">Редакция RELIQUA</p>
-            <p className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
-              {post.published_at &&
-                new Date(post.published_at).toLocaleDateString("ru-RU", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              {post.published_at ? " · " : ""}
-              {minutes} мин чтения
-            </p>
-          </div>
+        {/* Byline: source, date, reading time */}
+        <div className="mt-7 border-y border-line py-4 text-sm">
+          <p className="font-medium text-ink">Редакция RELIQUA</p>
+          <p className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+            {post.published_at &&
+              new Date(post.published_at).toLocaleDateString("ru-RU", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            {post.published_at ? " · " : ""}
+            {minutes} мин чтения
+          </p>
         </div>
       </header>
 

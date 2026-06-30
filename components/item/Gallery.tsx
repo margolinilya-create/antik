@@ -40,7 +40,7 @@ export function Gallery({ images, title }: { images: ItemImage[]; title: string 
                 alt={img.alt_ru ?? `${title} — фото ${i + 1}`}
                 fill
                 sizes="120px"
-                className="object-cover"
+                className="object-contain p-1"
               />
             </button>
           ))}

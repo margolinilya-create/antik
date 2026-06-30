@@ -7,7 +7,6 @@ import {
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JournalCard } from "@/components/journal/JournalCard";
 import { JournalCover } from "@/components/journal/JournalCover";
-import { JournalAvatar } from "@/components/journal/JournalAvatar";
 import { journalTheme } from "@/lib/journal-art";
 
 export const revalidate = 3600;
@@ -69,12 +68,9 @@ export default async function JournalPage() {
                 className="aspect-[16/10] w-full"
               />
               <div className="flex flex-1 flex-col p-7">
-                <div className="flex items-center gap-2.5">
-                  <JournalAvatar post={lead} size={32} />
-                  <span className="text-[0.66rem] uppercase tracking-[0.18em] text-accent">
-                    {journalTheme(lead).label}
-                  </span>
-                </div>
+                <span className="text-[0.66rem] uppercase tracking-[0.18em] text-accent">
+                  {journalTheme(lead).label}
+                </span>
                 <h2 className="mt-4 font-display text-2xl font-medium leading-tight tracking-tight text-ink transition-colors group-hover:text-accent sm:text-3xl">
                   {lead.title_ru}
                 </h2>
