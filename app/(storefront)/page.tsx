@@ -44,7 +44,7 @@ export default async function HomePage() {
           sizes="100vw"
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/65" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55" />
         <div className="relative z-10 mx-auto max-w-2xl px-5 text-center text-[#f6f2ea]">
           <p className="text-[0.6rem] uppercase tracking-[0.34em] text-[#e7dcc6]">
             Антикварная галерея · с 1999

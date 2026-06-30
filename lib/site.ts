@@ -15,12 +15,13 @@ export const site = {
   },
   tagline: "Антиквариат с провенансом и экспертизой",
   founded: "1999",
+  // Placeholder contact details — replace with the gallery's real data.
   phone: "+7 (495) 120-00-00",
   phoneHref: "tel:+74951200000",
-  email: "info@antik-gallery.ru",
-  emailHref: "mailto:info@antik-gallery.ru",
-  telegram: "antik_gallery",
-  telegramHref: "https://t.me/antik_gallery",
+  email: "info@reliqua.gallery",
+  emailHref: "mailto:info@reliqua.gallery",
+  telegram: "reliqua_gallery",
+  telegramHref: "https://t.me/reliqua_gallery",
   whatsappHref: "https://wa.me/74951200000",
   address: {
     region: "Москва",

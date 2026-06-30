@@ -66,7 +66,7 @@ export default async function JournalPostPage({
           {post.title_ru}
         </h1>
         {post.excerpt_ru && (
-          <p className="mt-5 text-lg font-light leading-relaxed text-muted">
+          <p className="mt-5 text-lg leading-relaxed text-ink/80">
             {post.excerpt_ru}
           </p>
         )}

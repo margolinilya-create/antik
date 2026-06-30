@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { env } from "@/lib/env";
@@ -31,7 +31,15 @@ export const metadata: Metadata = {
     locale: "ru_RU",
     siteName: "RELIQUA",
   },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg" }],
+  },
   robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f4f1ea",
 };
 
 export default function RootLayout({

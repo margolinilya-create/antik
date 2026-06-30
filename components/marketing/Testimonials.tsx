@@ -16,7 +16,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`size-3.5 ${i < t.rating ? "fill-accent text-accent" : "text-line"}`}
+                  className={`size-3.5 ${i < t.rating ? "fill-accent text-accent" : "text-faint"}`}
                   strokeWidth={1}
                   aria-hidden
                 />

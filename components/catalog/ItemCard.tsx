@@ -20,7 +20,7 @@ export function ItemCard({ item, priority = false }: { item: ItemListRow; priori
         />
         <span className="pointer-events-none absolute inset-0 border border-transparent transition-colors duration-500 group-hover:border-ink/20" />
         {item.status !== "in_stock" && (
-          <span className="pointer-events-none absolute left-3 top-3 bg-bg/80 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-ink backdrop-blur">
+          <span className="pointer-events-none absolute left-3 top-3 bg-ink/85 px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-bg backdrop-blur">
             {statusLabel[item.status]}
           </span>
         )}

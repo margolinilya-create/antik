@@ -28,8 +28,10 @@ export function Gallery({ images, title }: { images: ItemImage[]; title: string 
               key={img.storage_path}
               onClick={() => setActive(i)}
               aria-label={`Фото ${i + 1}`}
-              className={`relative aspect-square overflow-hidden border transition-colors ${
-                i === active ? "border-accent" : "border-line hover:border-muted"
+              className={`relative aspect-square overflow-hidden transition-colors ${
+                i === active
+                  ? "border-2 border-accent"
+                  : "border border-line hover:border-muted"
               }`}
             >
               <Image

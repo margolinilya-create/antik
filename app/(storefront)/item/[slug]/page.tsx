@@ -153,7 +153,7 @@ export default async function ItemPage({
           </div>
 
           <div className="flex items-center gap-4 border-y border-line py-5">
-            <span className="text-2xl font-light tracking-wide text-ink">
+            <span className="font-display text-2xl font-medium tracking-wide text-ink">
               {formatPrice(item.price, item.currency, item.price_on_request)}
             </span>
             {item.status !== "in_stock" && (
@@ -204,7 +204,7 @@ export default async function ItemPage({
 
       {item.description_ru && (
         <section className="max-w-3xl">
-          <h2 className="mb-3 text-lg font-medium tracking-tight">Описание</h2>
+          <h2 className="mb-3 font-display text-xl font-medium tracking-tight">Описание</h2>
           <div className="gold-rule mb-4 w-16" />
           <p className="whitespace-pre-line leading-relaxed text-ink/80">
             {item.description_ru}
@@ -214,7 +214,7 @@ export default async function ItemPage({
 
       {item.provenance_ru && (
         <section className="max-w-3xl">
-          <h2 className="mb-3 text-lg font-medium tracking-tight">Провенанс</h2>
+          <h2 className="mb-3 font-display text-xl font-medium tracking-tight">Провенанс</h2>
           <div className="gold-rule mb-4 w-16" />
           <p className="leading-relaxed text-ink/80">{item.provenance_ru}</p>
         </section>
