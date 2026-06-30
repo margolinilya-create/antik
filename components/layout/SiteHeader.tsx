@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { CartLink } from "./CartLink";
+import { FavoritesLink } from "./FavoritesLink";
 
 const NAV = [
   { href: "/catalog?category=zhivopis", label: "Живопись" },
   { href: "/catalog?category=ikony", label: "Иконы" },
   { href: "/catalog?category=farfor", label: "Фарфор" },
-  { href: "/catalog?category=samovary", label: "Самовары" },
   { href: "/brands", label: "Бренды" },
+  { href: "/journal", label: "Журнал" },
   { href: "/catalog", label: "Каталог" },
 ];
 
@@ -47,6 +48,7 @@ export function SiteHeader() {
               className="w-28 border-b border-line bg-transparent py-1.5 pl-6 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-accent focus:w-44"
             />
           </form>
+          <FavoritesLink />
           <CartLink />
         </div>
       </div>

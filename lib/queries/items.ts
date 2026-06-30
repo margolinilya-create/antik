@@ -43,6 +43,52 @@ export async function searchItems(filters: SearchFilters): Promise<SearchResult>
   return data as unknown as SearchResult;
 }
 
+/** Sold items for the «Архив проданного» (social proof). */
+export async function listSoldItems(limit = 24): Promise<ItemListRow[]> {
+  if (!isSupabaseConfigured) return [];
+  const supabase = createStaticClient();
+  const { data } = await supabase
+    .from("items")
+    .select(
+      `id, slug, title_ru, subtitle_ru, price, currency, price_on_request, status,
+       category:categories(name_ru), maker:makers(name_ru),
+       images:item_images(storage_path, alt_ru, width, height, blurhash, is_primary, sort_order)`,
+    )
+    .eq("status", "sold")
+    .order("sold_at", { ascending: false })
+    .limit(limit);
+
+  return ((data as Record<string, unknown>[]) ?? []).map((row) => {
+    const imgs = (row.images as (ItemDetail["images"][number] & { is_primary?: boolean; sort_order?: number })[]) ?? [];
+    const cover = [...imgs].sort(
+      (a, b) => Number(b.is_primary) - Number(a.is_primary) || (a.sort_order ?? 0) - (b.sort_order ?? 0),
+    )[0];
+    const one = (v: unknown) => (Array.isArray(v) ? v[0] : v) as { name_ru: string } | null;
+    return {
+      id: row.id,
+      slug: row.slug,
+      title_ru: row.title_ru,
+      subtitle_ru: row.subtitle_ru ?? null,
+      price: row.price ?? null,
+      currency: row.currency,
+      price_on_request: row.price_on_request,
+      status: row.status,
+      category: one(row.category)?.name_ru ?? null,
+      era: null,
+      maker: one(row.maker)?.name_ru ?? null,
+      image: cover
+        ? {
+            storage_path: cover.storage_path,
+            alt_ru: cover.alt_ru,
+            width: cover.width,
+            height: cover.height,
+            blurhash: cover.blurhash,
+          }
+        : null,
+    } as ItemListRow;
+  });
+}
+
 /** All published slugs for generateStaticParams / sitemap. */
 export async function getPublishedSlugs(): Promise<{ slug: string; updated_at: string }[]> {
   if (!isSupabaseConfigured) return [];

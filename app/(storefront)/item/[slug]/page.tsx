@@ -7,8 +7,15 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { Gallery } from "@/components/item/Gallery";
 import { ReserveButton } from "@/components/item/ReserveButton";
 import { AddToCartButton } from "@/components/item/AddToCartButton";
+import { MakeOffer } from "@/components/item/MakeOffer";
+import { FavoriteButton } from "@/components/item/FavoriteButton";
+import { RelatedItems } from "@/components/item/RelatedItems";
+import { RecentlyViewed } from "@/components/item/RecentlyViewed";
+import { TrustBadges } from "@/components/marketing/TrustBadges";
 import { imageUrl } from "@/lib/supabase/storage";
+import { listRelatedItems } from "@/lib/queries/content";
 import { buildProductJsonLd } from "@/lib/seo/jsonld";
+import type { ItemListRow } from "@/types/database";
 import {
   formatPrice,
   formatDimensions,
@@ -63,6 +70,32 @@ export default async function ItemPage({
   const item = await getItemBySlug(slug);
   if (!item) notFound();
 
+  const related = await listRelatedItems(item.category?.slug ?? null, item.slug, 4);
+
+  // Compact list-row view of this item for favorites / recently-viewed.
+  const row: ItemListRow = {
+    id: item.id,
+    slug: item.slug,
+    title_ru: item.title_ru,
+    subtitle_ru: item.subtitle_ru,
+    price: item.price,
+    currency: item.currency,
+    price_on_request: item.price_on_request,
+    status: item.status,
+    category: item.category?.name_ru ?? null,
+    era: item.era?.name_ru ?? null,
+    maker: item.maker?.name_ru ?? null,
+    image: item.images[0]
+      ? {
+          storage_path: item.images[0].storage_path,
+          alt_ru: item.images[0].alt_ru,
+          width: item.images[0].width,
+          height: item.images[0].height,
+          blurhash: item.images[0].blurhash,
+        }
+      : null,
+  };
+
   const dimensions = formatDimensions(item);
   const specs: { label: string; value: React.ReactNode }[] = [
     item.maker && {
@@ -112,6 +145,9 @@ export default async function ItemPage({
             {item.subtitle_ru && (
               <p className="mt-3 text-muted">{item.subtitle_ru}</p>
             )}
+            <p className="mt-4 inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.14em] text-accent">
+              <span aria-hidden>✦</span> Единственный экземпляр
+            </p>
           </div>
 
           <div className="flex items-center gap-4 border-y border-line py-5">
@@ -125,23 +161,29 @@ export default async function ItemPage({
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <ReserveButton slug={item.slug} status={item.status} />
             {item.status !== "sold" && (
-              <AddToCartButton
-                item={{
-                  slug: item.slug,
-                  title: item.title_ru,
-                  price: item.price,
-                  currency: item.currency,
-                  price_on_request: item.price_on_request,
-                  image: item.images[0]
-                    ? imageUrl(item.images[0].storage_path, { width: 200 })
-                    : null,
-                }}
-              />
+              <>
+                <MakeOffer slug={item.slug} />
+                <AddToCartButton
+                  item={{
+                    slug: item.slug,
+                    title: item.title_ru,
+                    price: item.price,
+                    currency: item.currency,
+                    price_on_request: item.price_on_request,
+                    image: item.images[0]
+                      ? imageUrl(item.images[0].storage_path, { width: 200 })
+                      : null,
+                  }}
+                />
+              </>
             )}
+            <FavoriteButton item={row} variant="full" />
           </div>
+
+          <TrustBadges />
 
           {specs.length > 0 && (
             <dl className="divide-y divide-line rounded-sm border border-line bg-surface text-sm">
@@ -175,6 +217,9 @@ export default async function ItemPage({
           <p className="leading-relaxed text-ink/80">{item.provenance_ru}</p>
         </section>
       )}
+
+      <RelatedItems items={related} />
+      <RecentlyViewed current={row} />
     </article>
   );
 }

@@ -1,8 +1,7 @@
 import { env } from "@/lib/env";
 import { imageUrl } from "@/lib/supabase/storage";
+import { site } from "@/lib/site";
 import type { ItemDetail, ItemStatus } from "@/types/database";
-
-const SITE_NAME = "Антик — антикварный магазин";
 
 /** Map our status to a schema.org availability URL. */
 function availability(status: ItemStatus): string {
@@ -98,7 +97,64 @@ export function buildOrganizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Store",
-    name: SITE_NAME,
-    url: env.siteUrl,
+    "@id": `${site.url}/#store`,
+    name: site.legalName,
+    alternateName: site.name,
+    url: site.url,
+    image: `${site.url}/opengraph-image`,
+    description: site.tagline,
+    foundingDate: site.founded,
+    telephone: site.phone,
+    email: site.email,
+    priceRange: "₽₽₽",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: site.address.street,
+      addressLocality: site.address.city,
+      postalCode: site.address.postalCode,
+      addressCountry: site.address.country,
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: site.phone,
+      email: site.email,
+      contactType: "sales",
+      areaServed: "RU",
+      availableLanguage: ["ru"],
+    },
+    sameAs: [site.telegramHref],
+  };
+}
+
+export function buildFaqJsonLd(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((i) => ({
+      "@type": "Question",
+      name: i.q,
+      acceptedAnswer: { "@type": "Answer", text: i.a },
+    })),
+  };
+}
+
+export function buildArticleJsonLd(post: {
+  slug: string;
+  title_ru: string;
+  excerpt_ru: string | null;
+  seo_description: string | null;
+  published_at: string | null;
+  updated_at?: string | null;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title_ru,
+    description: post.seo_description ?? post.excerpt_ru ?? undefined,
+    datePublished: post.published_at ?? undefined,
+    dateModified: post.updated_at ?? post.published_at ?? undefined,
+    url: `${site.url}/journal/${post.slug}`,
+    author: { "@type": "Organization", name: site.legalName },
+    publisher: { "@type": "Organization", name: site.legalName },
   };
 }
