@@ -1,4 +1,4 @@
-import { getTaxonomyFull, SEO_TAXONOMY } from "@/lib/queries/admin";
+import { getTaxonomyFull, SEO_TAXONOMY, LANDING_TAXONOMY } from "@/lib/queries/admin";
 import { AddTermForm } from "@/components/admin/AddTermForm";
 import { TaxonomyEditor } from "@/components/admin/TaxonomyEditor";
 
@@ -35,6 +35,7 @@ export default async function TaxonomyPage() {
               table={g.table}
               rows={data[g.table]}
               hasSeo={SEO_TAXONOMY.includes(g.table)}
+              hasBody={LANDING_TAXONOMY.includes(g.table)}
             />
             <div className="mt-4 border-t border-stone-100 pt-4">
               <AddTermForm table={g.table} />

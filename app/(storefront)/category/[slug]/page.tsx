@@ -5,6 +5,7 @@ import { getTaxonomyTerm, getTaxonomySlugs } from "@/lib/queries/taxonomy";
 import { ItemCard } from "@/components/catalog/ItemCard";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { RichText } from "@/components/content/RichText";
 import { buildItemListJsonLd } from "@/lib/seo/jsonld";
 
 export const revalidate = 3600;
@@ -73,6 +74,12 @@ export default async function CategoryPage({
         <p className="border border-dashed border-line px-4 py-16 text-center text-sm text-muted">
           В этой категории пока нет предметов.
         </p>
+      )}
+
+      {term.body_ru && (
+        <section className="mt-6 max-w-3xl border-t border-line pt-10">
+          <RichText text={term.body_ru} />
+        </section>
       )}
     </div>
   );

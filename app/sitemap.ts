@@ -4,17 +4,20 @@ import { getPublishedSlugs } from "@/lib/queries/items";
 import { getTaxonomySlugs } from "@/lib/queries/taxonomy";
 import { getBrandSlugs } from "@/lib/queries/makers";
 import { getJournalSlugs } from "@/lib/queries/content";
+import { getCollectionSlugs } from "@/lib/queries/collections";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = env.siteUrl.replace(/\/$/, "");
 
-  const [items, categories, eras, brands, journal] = await Promise.all([
-    getPublishedSlugs(),
-    getTaxonomySlugs("categories"),
-    getTaxonomySlugs("eras"),
-    getBrandSlugs(),
-    getJournalSlugs(),
-  ]);
+  const [items, categories, eras, brands, journal, collections] =
+    await Promise.all([
+      getPublishedSlugs(),
+      getTaxonomySlugs("categories"),
+      getTaxonomySlugs("eras"),
+      getBrandSlugs(),
+      getJournalSlugs(),
+      getCollectionSlugs(),
+    ]);
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "daily", priority: 1 },
@@ -24,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/prodano`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/about`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/guarantees`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/concierge`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/sell`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/faq`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/politika-konfidencialnosti`, changeFrequency: "yearly", priority: 0.3 },
@@ -61,11 +65,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  const collectionPages: MetadataRoute.Sitemap = collections.map((slug) => ({
+    url: `${base}/collection/${slug}`,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
   return [
     ...staticPages,
     ...itemPages,
     ...categoryPages,
     ...eraPages,
+    ...collectionPages,
     ...brandPages,
     ...journalPages,
   ];

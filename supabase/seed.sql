@@ -92,3 +92,59 @@ insert into item_materials (item_id, material_id)
 select i.id, m.id from items i, materials m
 where i.slug = 'ikona-nikolay-chudotvorets' and m.slug in ('derevo')
 on conflict do nothing;
+
+-- =====================================================================
+-- Curated collections (подборки) + membership. Re-runnable via slug guards.
+-- =====================================================================
+insert into collections (slug, title_ru, subtitle_ru, intro_ru, is_featured, sort_order, published_at) values
+  ('russkiy-modern', 'Русский модерн',
+   'Фарфор, бронза и предметы рубежа XIX–XX веков',
+   'Кураторская подборка предметов эпохи модерна: плавные линии, природные мотивы и безупречное мастерство мастеров Российской империи.',
+   true, 1, now()),
+  ('predmety-s-istoriey', 'Предметы с провенансом',
+   'Вещи с задокументированной историей бытования',
+   'Избранные предметы, чья история подтверждена: клейма, архивные сведения и честно описанное состояние.',
+   true, 2, now())
+on conflict (slug) do nothing;
+
+-- Attach a few sample items to «Русский модерн» (ordered).
+insert into collection_items (collection_id, item_id, sort_order)
+select c.id, i.id,
+       case i.slug when 'chashka-kuznetsov-modern' then 0
+                   when 'samovar-zharovoy-tula-1890' then 1 else 2 end
+from collections c, items i
+where c.slug = 'russkiy-modern'
+  and i.slug in ('chashka-kuznetsov-modern', 'samovar-zharovoy-tula-1890')
+on conflict do nothing;
+
+insert into collection_items (collection_id, item_id, sort_order)
+select c.id, i.id, 0
+from collections c, items i
+where c.slug = 'predmety-s-istoriey'
+  and i.slug = 'ikona-nikolay-chudotvorets'
+on conflict do nothing;
+
+-- =====================================================================
+-- Long-form landing bodies (## headings → <h2> in RichText).
+-- =====================================================================
+update eras set
+  intro_ru = coalesce(intro_ru, 'Модерн (ар-нуво) — стиль рубежа XIX–XX веков с плавными линиями и природными мотивами.'),
+  body_ru = coalesce(body_ru,
+'## Исторический контекст
+Модерн (в России — «русский модерн», на Западе — ар-нуво) сложился на рубеже XIX и XX веков как реакция на эклектику и подражание историческим стилям. Художники искали новый язык, вдохновлённый природой.
+
+## Характерные черты
+Текучие, асимметричные линии, растительные и цветочные орнаменты, изгиб «удар бича», приглушённая природная палитра. В декоративно-прикладном искусстве — внимание к материалу и ручной работе.
+
+## Знаковые предметы
+Фарфор Товарищества Кузнецова, бронзовое и латунное литьё, осветительные приборы, мебель с гнутыми формами и предметы с эмалью.')
+where slug = 'modern';
+
+update categories set
+  body_ru = coalesce(body_ru,
+'## О категории
+Фарфор — один из самых собираемых разделов антиквариата: от парадных сервизов до камерной чайной пары. Ценятся клейма мануфактур, сохранность росписи и золочения.
+
+## На что смотреть
+Подлинность клейма, отсутствие сколов и реставрационных дописок, качество живописи и позолоты. Каждый предмет в нашей подборке описан честно — с указанием состояния.')
+where slug = 'farfor';

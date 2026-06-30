@@ -16,10 +16,12 @@ function TermRow({
   table,
   row,
   hasSeo,
+  hasBody,
 }: {
   table: TaxonomyTable;
   row: TaxonomyFullRow;
   hasSeo: boolean;
+  hasBody: boolean;
 }) {
   const router = useRouter();
   const [name, setName] = useState(row.name_ru);
@@ -28,6 +30,7 @@ function TermRow({
   const [seoTitle, setSeoTitle] = useState(row.seo_title ?? "");
   const [seoDesc, setSeoDesc] = useState(row.seo_description ?? "");
   const [intro, setIntro] = useState(row.intro_ru ?? "");
+  const [body, setBody] = useState(row.body_ru ?? "");
   const [open, setOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -42,6 +45,7 @@ function TermRow({
         ...(hasSeo
           ? { seo_title: seoTitle, seo_description: seoDesc, intro_ru: intro }
           : {}),
+        ...(hasBody ? { body_ru: body } : {}),
       });
       if (res.error) setErr(res.error);
       else {
@@ -133,6 +137,20 @@ function TermRow({
               </label>
             </>
           )}
+          {hasBody && (
+            <label className="space-y-0.5 sm:col-span-2">
+              <span className={lbl}>
+                Развёрнутый текст («## Заголовок» — секции)
+              </span>
+              <textarea
+                value={body}
+                rows={6}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder={"## Исторический контекст\nАбзац…\n\n## Характерные черты\nАбзац…"}
+                className={input}
+              />
+            </label>
+          )}
         </div>
       )}
 
@@ -155,10 +173,12 @@ export function TaxonomyEditor({
   table,
   rows,
   hasSeo,
+  hasBody = false,
 }: {
   table: TaxonomyTable;
   rows: TaxonomyFullRow[];
   hasSeo: boolean;
+  hasBody?: boolean;
 }) {
   if (rows.length === 0) {
     return <p className="text-sm text-stone-400">пусто</p>;
@@ -166,7 +186,7 @@ export function TaxonomyEditor({
   return (
     <ul className="space-y-2">
       {rows.map((r) => (
-        <TermRow key={r.id} table={table} row={r} hasSeo={hasSeo} />
+        <TermRow key={r.id} table={table} row={r} hasSeo={hasSeo} hasBody={hasBody} />
       ))}
     </ul>
   );

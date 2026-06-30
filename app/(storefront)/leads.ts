@@ -181,3 +181,89 @@ export async function sellRequest(
   });
   return { ok: true };
 }
+
+/** "Подбор под запрос" — concierge / personal-sourcing request. */
+export async function sourcingRequest(
+  _prev: LeadState,
+  formData: FormData,
+): Promise<LeadState> {
+  const parsed = contact.safeParse({
+    customer_name: formData.get("customer_name"),
+    phone: formData.get("phone") || undefined,
+    email: formData.get("email") || undefined,
+    telegram: formData.get("telegram") || undefined,
+    message_ru: formData.get("message_ru") || undefined,
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
+  if (!hasConsent(formData)) return { error: CONSENT_ERROR };
+  if (await leadRateLimited()) return { error: RATE_ERROR };
+  if (!isSupabaseConfigured) return notConfigured();
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("inquiries").insert({
+    type: "sourcing",
+    customer_name: parsed.data.customer_name,
+    phone: parsed.data.phone,
+    email: parsed.data.email,
+    telegram: parsed.data.telegram,
+    message_ru: parsed.data.message_ru,
+    source: "concierge",
+  });
+  if (error) return { error: "Не удалось отправить заявку." };
+
+  await notifyNewInquiry({
+    name: parsed.data.customer_name,
+    contact: parsed.data.phone ?? parsed.data.email ?? parsed.data.telegram ?? "",
+    item: "подбор под запрос",
+  });
+  return { ok: true };
+}
+
+/** "Запросить фото / видео / отчёт о состоянии" — extra-media request on an item. */
+export async function requestInfo(
+  _prev: LeadState,
+  formData: FormData,
+): Promise<LeadState> {
+  const parsed = contact.safeParse({
+    customer_name: formData.get("customer_name"),
+    phone: formData.get("phone") || undefined,
+    email: formData.get("email") || undefined,
+    telegram: formData.get("telegram") || undefined,
+    message_ru: formData.get("message_ru") || undefined,
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
+  if (!hasConsent(formData)) return { error: CONSENT_ERROR };
+  if (await leadRateLimited()) return { error: RATE_ERROR };
+  if (!isSupabaseConfigured) return notConfigured();
+
+  const supabase = await createClient();
+  const itemSlug = String(formData.get("item_slug") ?? "") || null;
+  let itemId: string | null = null;
+  if (itemSlug) {
+    const { data } = await supabase.from("items").select("id").eq("slug", itemSlug).single();
+    itemId = (data as { id: string } | null)?.id ?? null;
+  }
+
+  const message =
+    parsed.data.message_ru?.trim() ||
+    "Прошу прислать дополнительные фото / видео и отчёт о состоянии предмета.";
+
+  const { error } = await supabase.from("inquiries").insert({
+    item_id: itemId,
+    type: "question",
+    customer_name: parsed.data.customer_name,
+    phone: parsed.data.phone,
+    email: parsed.data.email,
+    telegram: parsed.data.telegram,
+    message_ru: message,
+    source: "media_request",
+  });
+  if (error) return { error: "Не удалось отправить запрос." };
+
+  await notifyNewInquiry({
+    name: parsed.data.customer_name,
+    contact: parsed.data.phone ?? parsed.data.email ?? parsed.data.telegram ?? "",
+    item: `доп. материалы · ${itemSlug ?? ""}`,
+  });
+  return { ok: true };
+}

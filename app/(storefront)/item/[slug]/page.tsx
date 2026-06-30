@@ -8,6 +8,7 @@ import { Gallery } from "@/components/item/Gallery";
 import { ReserveButton } from "@/components/item/ReserveButton";
 import { AddToCartButton } from "@/components/item/AddToCartButton";
 import { MakeOffer } from "@/components/item/MakeOffer";
+import { RequestMedia } from "@/components/item/RequestMedia";
 import { FavoriteButton } from "@/components/item/FavoriteButton";
 import { RelatedItems } from "@/components/item/RelatedItems";
 import { RecentlyViewed } from "@/components/item/RecentlyViewed";
@@ -175,6 +176,7 @@ export default async function ItemPage({
             {item.status !== "sold" ? (
               <>
                 <MakeOffer slug={item.slug} />
+                <RequestMedia slug={item.slug} />
                 <div className="grid grid-cols-2 gap-2.5">
                   <AddToCartButton
                     item={{
