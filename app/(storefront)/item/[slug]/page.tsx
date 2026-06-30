@@ -145,9 +145,11 @@ export default async function ItemPage({
             {item.subtitle_ru && (
               <p className="mt-3 text-muted">{item.subtitle_ru}</p>
             )}
-            <p className="mt-4 inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.14em] text-accent">
-              <span aria-hidden>✦</span> Единственный экземпляр
-            </p>
+            {item.status === "in_stock" && (
+              <p className="mt-4 inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.14em] text-accent">
+                <span aria-hidden>✦</span> Единственный экземпляр
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-4 border-y border-line py-5">

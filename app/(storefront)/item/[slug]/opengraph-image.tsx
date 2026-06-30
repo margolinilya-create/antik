@@ -15,9 +15,14 @@ export default async function Image({
   const { slug } = await params;
   const item = await getItemBySlug(slug);
   const title = item?.title_ru ?? "Антик — антикварная галерея";
-  const price = item
-    ? formatPrice(item.price, item.currency, item.price_on_request)
-    : "";
+  const price =
+    item && item.status === "in_stock"
+      ? formatPrice(item.price, item.currency, item.price_on_request)
+      : item?.status === "sold"
+        ? "Продано"
+        : item?.status === "reserved"
+          ? "В резерве"
+          : "";
   const cover = item?.images?.[0]
     ? imageUrl(item.images[0].storage_path, { width: 700 })
     : null;

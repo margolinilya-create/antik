@@ -50,7 +50,11 @@ export function SellForm() {
           placeholder="Опишите предмет: что это, эпоха, состояние, клейма. Можно приложить ссылку на фото."
         />
       </div>
-      {state.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state.error && (
+        <p role="alert" className="text-sm text-red-400">
+          {state.error}
+        </p>
+      )}
       <button
         type="submit"
         disabled={pending}

@@ -40,7 +40,11 @@ export function MakeOffer({ slug }: { slug: string }) {
         <input name="phone" type="tel" placeholder="Телефон" className={input} />
         <input name="telegram" placeholder="Telegram" className={input} />
       </div>
-      {state.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state.error && (
+        <p role="alert" className="text-sm text-red-400">
+          {state.error}
+        </p>
+      )}
       <div className="flex gap-2">
         <button
           type="submit"

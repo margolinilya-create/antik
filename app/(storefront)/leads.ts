@@ -12,10 +12,15 @@ export interface LeadState {
 
 const contact = z
   .object({
-    customer_name: z.string().trim().min(2, "Укажите имя"),
-    phone: z.string().trim().optional(),
-    email: z.string().email("Некорректный email").optional().or(z.literal("")),
-    telegram: z.string().trim().optional(),
+    customer_name: z.string().trim().min(2, "Укажите имя").max(120),
+    phone: z.string().trim().max(40).optional(),
+    email: z
+      .string()
+      .email("Некорректный email")
+      .max(254)
+      .optional()
+      .or(z.literal("")),
+    telegram: z.string().trim().max(80).optional(),
     message_ru: z.string().max(3000).optional(),
   })
   .refine((d) => d.phone || d.email || d.telegram, {
@@ -27,13 +32,39 @@ function notConfigured(): LeadState {
   return { error: "Сервер не настроен. Подключите Supabase." };
 }
 
+/**
+ * Parse a Russian-formatted money string into a number.
+ * Handles spaces / NBSP / ₽ as noise, "1 000,50" (comma decimal),
+ * and "1.000.000" (dot thousands). Returns NaN if unparseable.
+ */
+function parseRubAmount(raw: string): number {
+  let s = raw.replace(/[^\d.,]/g, ""); // keep digits + separators only
+  if (s.includes(",") && s.includes(".")) {
+    // Mixed separators: the last one is the decimal point.
+    s =
+      s.lastIndexOf(",") > s.lastIndexOf(".")
+        ? s.replace(/\./g, "").replace(",", ".")
+        : s.replace(/,/g, "");
+  } else if (s.includes(",")) {
+    const parts = s.split(",");
+    // One comma + ≤2 trailing digits = decimal; otherwise thousands grouping.
+    s =
+      parts.length === 2 && parts[1].length <= 2
+        ? parts.join(".")
+        : parts.join("");
+  } else if ((s.match(/\./g)?.length ?? 0) > 1) {
+    s = s.replace(/\./g, ""); // multiple dots = thousands grouping
+  }
+  return Number(s);
+}
+
 /** Newsletter / new-arrivals subscription. */
 export async function subscribeNewsletter(
   _prev: LeadState,
   formData: FormData,
 ): Promise<LeadState> {
   const email = String(formData.get("email") ?? "").trim();
-  if (!z.string().email().safeParse(email).success) {
+  if (!z.string().email().max(254).safeParse(email).success) {
     return { error: "Введите корректный email" };
   }
   if (!isSupabaseConfigured) return notConfigured();
@@ -41,8 +72,10 @@ export async function subscribeNewsletter(
   const { error } = await supabase
     .from("subscribers")
     .insert({ email, source: String(formData.get("source") ?? "site") });
-  // Unique-violation = already subscribed → treat as success.
-  if (error && !/duplicate|unique/i.test(error.message)) {
+  // Unique-violation (Postgres 23505) = already subscribed → treat as success.
+  const isDuplicate =
+    error?.code === "23505" || /duplicate|unique/i.test(error?.message ?? "");
+  if (error && !isDuplicate) {
     return { error: "Не удалось подписаться. Попробуйте позже." };
   }
   return { ok: true };
@@ -62,7 +95,7 @@ export async function makeOffer(
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
 
-  const amount = Number(String(formData.get("offer_amount") ?? "").replace(/\s/g, ""));
+  const amount = parseRubAmount(String(formData.get("offer_amount") ?? ""));
   if (!Number.isFinite(amount) || amount <= 0) {
     return { error: "Укажите сумму предложения" };
   }

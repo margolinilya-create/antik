@@ -78,9 +78,13 @@ export async function listRelatedItems(
 ): Promise<ItemListRow[]> {
   if (!isSupabaseConfigured || !categorySlug) return [];
   const supabase = createStaticClient();
+  // search_items returns in_stock | reserved | sold; over-fetch then keep only
+  // in-stock so "Похожие предметы" never links to dead-end sold/reserved pages.
   const { data } = await supabase.rpc("search_items", {
-    filters: { category: categorySlug, limit: limit + 1, sort: "newest" },
+    filters: { category: categorySlug, limit: limit + 8, sort: "newest" },
   });
   const result = (data as { items: ItemListRow[] } | null)?.items ?? [];
-  return result.filter((i) => i.slug !== excludeSlug).slice(0, limit);
+  return result
+    .filter((i) => i.slug !== excludeSlug && i.status === "in_stock")
+    .slice(0, limit);
 }

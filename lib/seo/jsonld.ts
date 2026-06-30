@@ -143,6 +143,7 @@ export function buildArticleJsonLd(post: {
   title_ru: string;
   excerpt_ru: string | null;
   seo_description: string | null;
+  cover_path?: string | null;
   published_at: string | null;
   updated_at?: string | null;
 }) {
@@ -151,6 +152,9 @@ export function buildArticleJsonLd(post: {
     "@type": "Article",
     headline: post.title_ru,
     description: post.seo_description ?? post.excerpt_ru ?? undefined,
+    ...(post.cover_path
+      ? { image: [imageUrl(post.cover_path, { width: 1200 })] }
+      : {}),
     datePublished: post.published_at ?? undefined,
     dateModified: post.updated_at ?? post.published_at ?? undefined,
     url: `${site.url}/journal/${post.slug}`,

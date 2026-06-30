@@ -1,8 +1,14 @@
 -- =====================================================================
 -- CRO / content features: make-an-offer, newsletter subscribers,
 -- testimonials (social proof), editorial journal (SEO + retention).
--- (inquiry_type enum gained 'offer' and 'sell' values separately.)
 -- =====================================================================
+
+-- New inquiry types for the "make an offer" and "sell to us" flows.
+-- ADD VALUE is idempotent (IF NOT EXISTS) and the new values are not used
+-- in-transaction below, so this is safe to run in one migration.
+alter type inquiry_type add value if not exists 'offer';
+alter type inquiry_type add value if not exists 'sell';
+
 alter table inquiries add column if not exists offer_amount numeric(12,2);
 
 create table if not exists subscribers (

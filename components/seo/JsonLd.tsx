@@ -3,8 +3,11 @@ export function JsonLd({ data }: { data: object }) {
   return (
     <script
       type="application/ld+json"
-      // JSON-LD is trusted, structured data we build ourselves.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      // JSON-LD is structured data we build ourselves, but escape "<" so an
+      // admin-entered "</script>" in any field can't break out of the tag.
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+      }}
     />
   );
 }
