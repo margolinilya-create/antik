@@ -1,9 +1,9 @@
-import { ShieldCheck, Truck, RotateCcw } from "lucide-react";
+import { ShieldCheck, Truck, Search } from "lucide-react";
 
 const badges = [
   { Icon: ShieldCheck, label: "Подлинность гарантирована" },
   { Icon: Truck, label: "Страховка и доставка" },
-  { Icon: RotateCcw, label: "Возврат 14 дней" },
+  { Icon: Search, label: "Персональный подбор" },
 ];
 
 /** Compact trust row shown next to the item CTA. */

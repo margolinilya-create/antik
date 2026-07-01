@@ -1,7 +1,7 @@
-import { ShieldCheck, BadgeCheck, Truck, RotateCcw } from "lucide-react";
+import { ShieldCheck, BadgeCheck, Truck, Search } from "lucide-react";
 import { guarantees } from "@/lib/site";
 
-const icons = [ShieldCheck, BadgeCheck, Truck, RotateCcw];
+const icons = [ShieldCheck, BadgeCheck, Truck, Search];
 
 export function GuaranteesStrip() {
   return (
