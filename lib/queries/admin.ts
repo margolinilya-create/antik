@@ -206,6 +206,9 @@ export type TaxonomyTable =
 /** Tables that carry SEO landing-page fields. */
 export const SEO_TAXONOMY: TaxonomyTable[] = ["categories", "eras", "makers"];
 
+/** Tables whose landing pages have a long-form editorial body (RichText). */
+export const LANDING_TAXONOMY: TaxonomyTable[] = ["categories", "eras"];
+
 export interface TaxonomyFullRow {
   id: string;
   slug: string;
@@ -214,6 +217,7 @@ export interface TaxonomyFullRow {
   seo_title: string | null;
   seo_description: string | null;
   intro_ru: string | null;
+  body_ru: string | null;
 }
 
 export async function getTaxonomyFull(): Promise<
@@ -248,9 +252,122 @@ export async function getTaxonomyFull(): Promise<
       seo_title: (r.seo_title as string | null) ?? null,
       seo_description: (r.seo_description as string | null) ?? null,
       intro_ru: (r.intro_ru as string | null) ?? null,
+      body_ru: (r.body_ru as string | null) ?? null,
     }));
   });
   return out;
+}
+
+// ---- Collections (admin) -------------------------------------------------
+
+export interface AdminCollectionRow {
+  id: string;
+  slug: string;
+  title_ru: string;
+  is_featured: boolean;
+  published_at: string | null;
+  item_count: number;
+}
+
+export interface AdminCollectionEdit {
+  id: string;
+  slug: string;
+  title_ru: string;
+  subtitle_ru: string | null;
+  intro_ru: string | null;
+  cover_path: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  is_featured: boolean;
+  sort_order: number;
+  published_at: string | null;
+  item_ids: string[];
+}
+
+export interface SelectableItem {
+  id: string;
+  slug: string;
+  title_ru: string;
+  status: ItemStatus;
+  image: string | null;
+}
+
+export async function listAdminCollections(): Promise<AdminCollectionRow[]> {
+  if (!isSupabaseConfigured) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("collections")
+    .select("id, slug, title_ru, is_featured, published_at, items:collection_items(item_id)")
+    .order("sort_order");
+  return ((data as Record<string, unknown>[]) ?? []).map((r) => ({
+    id: r.id as string,
+    slug: r.slug as string,
+    title_ru: r.title_ru as string,
+    is_featured: (r.is_featured as boolean) ?? false,
+    published_at: (r.published_at as string | null) ?? null,
+    item_count: ((r.items as unknown[]) ?? []).length,
+  }));
+}
+
+export async function getCollectionForEdit(
+  id: string,
+): Promise<AdminCollectionEdit | null> {
+  if (!isSupabaseConfigured) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("collections")
+    .select("*, items:collection_items(item_id, sort_order)")
+    .eq("id", id)
+    .single();
+  if (error || !data) return null;
+  const row = data as Record<string, unknown>;
+  const items = ((row.items as { item_id: string; sort_order: number }[]) ?? [])
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((m) => m.item_id);
+  return {
+    id: row.id as string,
+    slug: row.slug as string,
+    title_ru: row.title_ru as string,
+    subtitle_ru: (row.subtitle_ru as string | null) ?? null,
+    intro_ru: (row.intro_ru as string | null) ?? null,
+    cover_path: (row.cover_path as string | null) ?? null,
+    seo_title: (row.seo_title as string | null) ?? null,
+    seo_description: (row.seo_description as string | null) ?? null,
+    is_featured: (row.is_featured as boolean) ?? false,
+    sort_order: (row.sort_order as number) ?? 0,
+    published_at: (row.published_at as string | null) ?? null,
+    item_ids: items,
+  };
+}
+
+/** Visible items (in_stock/reserved/sold) the admin can add to a collection. */
+export async function listSelectableItems(): Promise<SelectableItem[]> {
+  if (!isSupabaseConfigured) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("items")
+    .select("id, slug, title_ru, status, images:item_images(storage_path, is_primary, sort_order)")
+    .in("status", ["in_stock", "reserved", "sold"])
+    .order("created_at", { ascending: false })
+    .limit(500);
+  return ((data as Record<string, unknown>[]) ?? []).map((r) => {
+    const imgs =
+      (r.images as { storage_path: string; is_primary: boolean; sort_order: number }[]) ??
+      [];
+    const cover =
+      [...imgs].sort(
+        (a, b) =>
+          Number(b.is_primary) - Number(a.is_primary) ||
+          (a.sort_order ?? 0) - (b.sort_order ?? 0),
+      )[0] ?? null;
+    return {
+      id: r.id as string,
+      slug: r.slug as string,
+      title_ru: r.title_ru as string,
+      status: r.status as ItemStatus,
+      image: cover?.storage_path ?? null,
+    };
+  });
 }
 
 export async function getDashboardCounts(): Promise<{

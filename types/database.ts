@@ -4,7 +4,13 @@
  */
 export type ItemStatus = "draft" | "in_stock" | "reserved" | "sold" | "archived";
 export type Currency = "RUB" | "USD" | "EUR";
-export type InquiryType = "reserve" | "buy" | "question";
+export type InquiryType =
+  | "reserve"
+  | "buy"
+  | "question"
+  | "offer"
+  | "sell"
+  | "sourcing";
 export type InquiryStatus = "new" | "in_progress" | "won" | "lost";
 export type ConditionGrade =
   | "mint"

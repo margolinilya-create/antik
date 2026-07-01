@@ -4,8 +4,13 @@ import Image from "next/image";
 import { Sparkles, Landmark, KeyRound } from "lucide-react";
 import { searchItems } from "@/lib/queries/items";
 import { listTestimonials, listFeaturedJournalPosts } from "@/lib/queries/content";
+import { listFeaturedCollections } from "@/lib/queries/collections";
+import { listTaxonomyTerms } from "@/lib/queries/taxonomy";
+import { listBrands } from "@/lib/queries/makers";
 import { ItemCard } from "@/components/catalog/ItemCard";
 import { JournalCard } from "@/components/journal/JournalCard";
+import { CollectionCard } from "@/components/marketing/CollectionCard";
+import { MakerSpotlight } from "@/components/marketing/MakerSpotlight";
 import { GuaranteesStrip } from "@/components/marketing/GuaranteesStrip";
 import { Testimonials } from "@/components/marketing/Testimonials";
 import { Newsletter } from "@/components/marketing/Newsletter";
@@ -32,11 +37,16 @@ const MARKERS = [
 ];
 
 export default async function HomePage() {
-  const [{ items }, testimonials, posts] = await Promise.all([
-    searchItems({ limit: 8, sort: "newest" }),
-    listTestimonials(3),
-    listFeaturedJournalPosts(3),
-  ]);
+  const [{ items }, testimonials, posts, collections, eras, makers] =
+    await Promise.all([
+      searchItems({ limit: 8, sort: "newest" }),
+      listTestimonials(3),
+      listFeaturedJournalPosts(3),
+      listFeaturedCollections(4),
+      listTaxonomyTerms("eras"),
+      listBrands(),
+    ]);
+  const spotlightMakers = makers.filter((m) => m.tagline_ru).slice(0, 3);
 
   return (
     <div className="space-y-24">
@@ -123,6 +133,25 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Curated collections */}
+      {collections.length > 0 && (
+        <section>
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <p className="eyebrow text-accent">В подборках</p>
+              <h2 className="mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl">
+                Кураторские подборки
+              </h2>
+            </div>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {collections.map((c) => (
+              <CollectionCard key={c.slug} collection={c} />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Latest arrivals */}
       <section>
         <div className="mb-8 flex items-end justify-between">
@@ -153,8 +182,34 @@ export default async function HomePage() {
         )}
       </section>
 
+      {/* Shop by era */}
+      {eras.length > 0 && (
+        <section>
+          <div className="mb-8 flex items-center gap-6">
+            <p className="eyebrow">Магазин по эпохам</p>
+            <div className="gold-rule flex-1" />
+          </div>
+          <div className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line sm:grid-cols-3 lg:grid-cols-4">
+            {eras.map((e) => (
+              <Link
+                key={e.slug}
+                href={`/era/${e.slug}`}
+                className="group bg-bg px-5 py-9 text-center transition-colors hover:bg-surface"
+              >
+                <span className="text-sm font-medium uppercase tracking-[0.14em] text-muted transition-colors group-hover:text-accent">
+                  {e.name_ru}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Social proof */}
       <Testimonials items={testimonials} />
+
+      {/* Maker spotlight */}
+      <MakerSpotlight makers={spotlightMakers} />
 
       {/* Топ журнала */}
       {posts.length > 0 && (

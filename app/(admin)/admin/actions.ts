@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAdminUser } from "@/lib/supabase/auth";
 import { itemSchema } from "@/lib/validation/item";
+import { collectionSchema } from "@/lib/validation/collection";
 import { slugify } from "@/lib/utils";
-import { SEO_TAXONOMY, type TaxonomyTable } from "@/lib/queries/admin";
+import { SEO_TAXONOMY, LANDING_TAXONOMY, type TaxonomyTable } from "@/lib/queries/admin";
 import type { ItemStatus } from "@/types/database";
 
 export interface ActionState {
@@ -395,6 +396,7 @@ export async function updateTaxonomyTerm(
     seo_title?: string;
     seo_description?: string;
     intro_ru?: string;
+    body_ru?: string;
   },
 ): Promise<ActionState> {
   try {
@@ -414,6 +416,9 @@ export async function updateTaxonomyTerm(
     patch.seo_title = values.seo_title?.trim() || null;
     patch.seo_description = values.seo_description?.trim() || null;
     patch.intro_ru = values.intro_ru?.trim() || null;
+  }
+  if (LANDING_TAXONOMY.includes(table)) {
+    patch.body_ru = values.body_ru?.trim() || null;
   }
   const { error } = await supabase.from(table).update(patch).eq("id", id);
   if (error) return { error: "Не удалось сохранить (возможно, дубль slug)" };
@@ -459,6 +464,154 @@ export async function createTaxonomyTerm(
   if (error) return { error: "Не удалось создать (возможно, дубль slug)" };
   revalidatePath("/admin/taxonomy");
   return { ok: true };
+}
+
+// ---- Collections ---------------------------------------------------------
+
+/** Revalidate the surfaces a collection appears on. */
+function revalidateCollection(slug?: string) {
+  revalidatePath("/");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/admin/collections");
+  if (slug) revalidatePath(`/collection/${slug}`);
+}
+
+/** Create or update a collection. Hidden `id` decides which. */
+export async function saveCollection(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+
+  const id = (formData.get("id") as string) || null;
+  const parsed = collectionSchema.safeParse({
+    title_ru: formData.get("title_ru"),
+    slug: formData.get("slug"),
+    subtitle_ru: formData.get("subtitle_ru"),
+    intro_ru: formData.get("intro_ru"),
+    seo_title: formData.get("seo_title"),
+    seo_description: formData.get("seo_description"),
+    is_featured: formData.get("is_featured") === "on",
+    published: formData.get("published") === "on",
+    sort_order: formData.get("sort_order"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Проверьте поля" };
+  }
+  const d = parsed.data;
+  const supabase = await createClient();
+  const slug = d.slug || slugify(d.title_ru);
+
+  // Stamp published_at only on the first publish; clear it when unpublished.
+  let existing: { published_at: string | null } | null = null;
+  if (id) {
+    const { data } = await supabase
+      .from("collections")
+      .select("published_at")
+      .eq("id", id)
+      .single();
+    existing = (data as { published_at: string | null }) ?? null;
+  }
+  const published_at = d.published
+    ? (existing?.published_at ?? new Date().toISOString())
+    : null;
+
+  const record = {
+    title_ru: d.title_ru,
+    slug,
+    subtitle_ru: d.subtitle_ru,
+    intro_ru: d.intro_ru,
+    seo_title: d.seo_title,
+    seo_description: d.seo_description,
+    is_featured: d.is_featured,
+    sort_order: d.sort_order,
+    published_at,
+  };
+
+  let collectionId = id;
+  if (id) {
+    const { error } = await supabase.from("collections").update(record).eq("id", id);
+    if (error) return { error: slugError(error.message) };
+  } else {
+    const { data, error } = await supabase
+      .from("collections")
+      .insert(record)
+      .select("id")
+      .single();
+    if (error) return { error: slugError(error.message) };
+    collectionId = (data as { id: string }).id;
+  }
+
+  revalidateCollection(slug);
+  if (!id && collectionId) redirect(`/admin/collections/${collectionId}/edit`);
+  return { ok: true };
+}
+
+/** Replace a collection's membership with an ordered list of item ids. */
+export async function setCollectionItems(
+  collectionId: string,
+  itemIds: string[],
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+  const supabase = await createClient();
+  await supabase.from("collection_items").delete().eq("collection_id", collectionId);
+  if (itemIds.length > 0) {
+    const { error } = await supabase.from("collection_items").insert(
+      itemIds.map((item_id, i) => ({
+        collection_id: collectionId,
+        item_id,
+        sort_order: i,
+      })),
+    );
+    if (error) return { error: "Не удалось сохранить состав" };
+  }
+  const { data } = await supabase
+    .from("collections")
+    .select("slug")
+    .eq("id", collectionId)
+    .single();
+  revalidateCollection((data as { slug: string } | null)?.slug);
+  return { ok: true };
+}
+
+/** Set or clear a collection's cover image (path already in Storage). */
+export async function setCollectionCover(
+  collectionId: string,
+  storagePath: string | null,
+): Promise<ActionState> {
+  try {
+    await ensureAdmin();
+  } catch {
+    return { error: "Нет доступа" };
+  }
+  if (storagePath && !storagePath.startsWith(`collections/${collectionId}/`)) {
+    return { error: "Недопустимый путь файла" };
+  }
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("collections")
+    .update({ cover_path: storagePath })
+    .eq("id", collectionId)
+    .select("slug")
+    .single();
+  revalidateCollection((data as { slug: string } | null)?.slug);
+  return { ok: true };
+}
+
+export async function deleteCollection(id: string, slug: string): Promise<void> {
+  await ensureAdmin();
+  const supabase = await createClient();
+  await supabase.from("collections").delete().eq("id", id);
+  revalidateCollection(slug);
+  redirect("/admin/collections");
 }
 
 export async function signOut(): Promise<void> {

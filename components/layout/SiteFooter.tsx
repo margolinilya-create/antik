@@ -17,6 +17,7 @@ const COLS = [
     links: [
       { href: "/about", label: "О галерее" },
       { href: "/guarantees", label: "Гарантии и доставка" },
+      { href: "/concierge", label: "Подбор под запрос" },
       { href: "/sell", label: "Продать / оценка" },
       { href: "/journal", label: "Журнал" },
       { href: "/faq", label: "Вопросы и ответы" },
